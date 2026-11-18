@@ -34,13 +34,14 @@ See [Open Questions](OPEN-QUESTIONS.md).
 
 ## Next block
 
-Block 2 implementation is in progress. A macOS first-run script now prompts for PostgreSQL and bootstrap-admin credentials, applies migrations, and starts the API. This laptop still needs Postgres.app installed/initialized before the script can run; the integration suite runs against H2 in PostgreSQL compatibility mode.
+Block 2 implementation is running locally against the installed PostgreSQL 18.7 server. The first-run script created the `prosperr_crm` database schema and initial administrator; a live login and Admin dashboard API call both returned successfully. The automated integration suite also runs against H2 in PostgreSQL compatibility mode.
 
 ## Verification
 
 - `npm run build` — passed.
 - `npm test` — passed (3 auth-route tests covering unauthenticated access, login form, and forced password change).
-- `bash -n backend/scripts/first-run.sh` — passed. Running the script correctly reported that `psql` is not installed yet.
+- `bash -n backend/scripts/first-run.sh` — passed.
 - `npm audit --omit=dev` — passed with no production dependency vulnerabilities.
 - Full `npm audit` reports five high-severity findings in the dev-toolchain dependency chain through `picomatch`. npm offered only a force fix that downgrades Vite across a major version; that change was not applied. Recheck once upstream packages provide a compatible fix.
 - `mvn -Dmaven.repo.local=/Users/adityaagarwal/.local/m2 test` — passed; one Spring integration test covers valid/invalid login, role permissions, account deactivation, duplicate normalized email, password-hash exclusion, and JWT expiration using H2 in PostgreSQL compatibility mode.
+- First run against local PostgreSQL 18.7 — Liquibase migration succeeded; initial admin login returned HTTP 200 with `mustChangePassword=true`; Admin dashboard summary returned one active account.
