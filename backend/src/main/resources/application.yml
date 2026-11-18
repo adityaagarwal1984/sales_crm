@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: prosperr-sales-crm-api
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/prosperr_crm}
+    username: ${DB_USERNAME:prosperr}
+    password: ${DB_PASSWORD:}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+app:
+  security:
+    jwt-secret-base64: ${APP_JWT_SECRET_BASE64:}
+  bootstrap:
+    admin-email: ${APP_BOOTSTRAP_ADMIN_EMAIL:}
+    admin-password: ${APP_BOOTSTRAP_ADMIN_PASSWORD:}
+  cors:
+    allowed-origin: ${APP_CORS_ALLOWED_ORIGIN:http://localhost:5173}
+
+server:
+  port: ${SERVER_PORT:8080}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html

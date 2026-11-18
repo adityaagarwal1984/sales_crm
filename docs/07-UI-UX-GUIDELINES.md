@@ -53,11 +53,13 @@ Reusable components live in `src/components/crm/` or `src/components/ui/`.
 
 The frontend is JavaScript-only. `components.json` configures shadcn/ui conventions (`tsx: false`, `@/components/ui`, and Lucide); `jsconfig.json` and Vite share the `@/*` source alias. Source-owned primitives use shadcn-style composition with Radix UI for accessible dropdowns and dialogs; extend these local components instead of adding one-off copies. Prefer small explicit props and keep business rules out of shared presentation components.
 
+For authentication, use a focused sign-in form with visible field labels and a generic credential error. Keep access tokens in React memory. For account administration, show name, email, role, active status, and explicit edit/activate/reset actions; never display credential data. Destructive access changes should explain the outcome and preserve at least one active administrator.
+
 ## Data and interaction boundaries
 
 - `src/data/dashboardData.js` contains static illustrative preview content only. It is not the CRM source of truth and must not be used as production data.
 - Dashboard search, status filter, and pagination operate only on the local preview rows.
-- Notifications, date range, profile, future navigation items, and all business actions are presentation placeholders. There is no authentication, API call, persistence, or CRM write operation in Block 1.
+- Authentication, login, password change, and administrator user actions use backend APIs. Other role dashboards, notifications, date range, and business actions remain presentation placeholders until their blocks are built.
 - Replace sample metrics only after metric definitions, currency, and workflow states are confirmed.
 
 ## Accessibility and responsive behavior
@@ -72,7 +74,7 @@ The frontend is JavaScript-only. `components.json` configures shadcn/ui conventi
 
 - `npm run dev` — run the Vite preview.
 - `npm run build` — ensure the UI compiles for production.
-- `npm test` — verify the five role routes and profile-menu switching.
+- `npm test` — verify authentication routing and forced password change.
 
 ## Decisions for later review
 

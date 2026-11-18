@@ -1,0 +1,9 @@
+package com.prosperr.crm.common;
+import java.util.Map; import org.springframework.dao.DataIntegrityViolationException; import org.springframework.http.HttpStatus; import org.springframework.http.ResponseEntity; import org.springframework.security.authentication.BadCredentialsException; import org.springframework.web.bind.MethodArgumentNotValidException; import org.springframework.web.bind.annotation.ExceptionHandler; import org.springframework.web.bind.annotation.RestControllerAdvice; import org.springframework.web.server.ResponseStatusException;
+@RestControllerAdvice public class ApiExceptionHandler {
+ @ExceptionHandler(BadCredentialsException.class) ResponseEntity<?> credentials(){return ResponseEntity.status(401).body(Map.of("error","invalid_credentials","message","Invalid email or password"));}
+ @ExceptionHandler(ResponseStatusException.class) ResponseEntity<?> status(ResponseStatusException e){return ResponseEntity.status(e.getStatusCode()).body(Map.of("error","request_failed","message",e.getReason()==null?"Request failed":e.getReason()));}
+ @ExceptionHandler(MethodArgumentNotValidException.class) ResponseEntity<?> validation(MethodArgumentNotValidException e){return ResponseEntity.badRequest().body(Map.of("error","validation_failed","message","Please check the submitted fields"));}
+ @ExceptionHandler(DataIntegrityViolationException.class) ResponseEntity<?> conflict(){return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("error","conflict","message","The request conflicts with an existing record"));}
+ @ExceptionHandler(Exception.class) ResponseEntity<?> unexpected(Exception e){return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error","internal_error","message","An unexpected error occurred"));}
+}

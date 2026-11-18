@@ -1,6 +1,6 @@
 # Database Design
 
-**Status: Conceptual draft only. Do not treat this as a final schema.** The business record definitions, ownership model, deletion policy, and many-to-many relationships need product-owner decisions. The [ER diagram](er-diagram.md) is intentionally provisional.
+**Status:** The Block 2 identity schema is implemented; business record definitions, ownership, deletion policy, and business relationships remain conceptual. The [ER diagram](er-diagram.md) is provisional.
 
 ## Candidate concepts
 
@@ -31,4 +31,8 @@
 
 ## Migration policy
 
-Liquibase is the only planned schema-change mechanism. Migrations should be incremental, reviewed, repeatable in fresh environments, and paired with application changes. No migration has been written yet.
+Liquibase is the schema-change mechanism. The initial identity migration creates fixed roles and users with normalized unique email, BCrypt hash, active state, forced-password-change flag, credential-change timestamp, and created/updated timestamps. Business tables have not yet been migrated.
+
+## Block 2 identity fields to validate
+
+The account model uses a normalized unique email, BCrypt password hash, active/inactive status, one role foreign key, forced-password-change flag, and timestamps. Password hashes are excluded from DTOs.

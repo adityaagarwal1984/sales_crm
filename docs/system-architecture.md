@@ -15,6 +15,10 @@ flowchart LR
   API --> DOC[OpenAPI / Swagger UI]
 ```
 
+## Local implementation baseline
+
+The frontend uses JavaScript, Vite, and Node.js 24 LTS. The backend build now targets Java 21 and Spring Boot 3.5.16 with Maven; Prosperr's prescribed versions, if any, take precedence. These are local compatibility choices, not confirmed company standards. Spring Boot 3.5.16 supports Java 17 and later, including Java 21. See the [Spring Boot system requirements](https://docs.spring.io/spring-boot/3.5/system-requirements.html).
+
 ## Boundaries
 
 - `frontend/` owns presentation, navigation, client-side validation for usability, and API calls. It is not an authorization boundary.
@@ -28,7 +32,7 @@ flowchart LR
 
 ## Authentication and authorization
 
-The brief requests JWT and BCrypt. Token issuance, storage, expiry, refresh/revocation, identity provider, password reset, account provisioning, and initial administrator setup are undecided. JWT in browser storage has security tradeoffs; choose token transport only after the threat model and deployment origin are known. Enforce role and ownership checks on the backend regardless of frontend navigation.
+Block 2 uses BCrypt and 15-minute signed JWT access tokens. The API returns the token at login; React keeps it in memory, with no refresh token. The JWT filter loads the current user on each request so deactivated accounts lose access immediately. One role is assigned per account. The first admin is seeded from environment configuration; admin-issued temporary passwords must be changed at next login. Backend endpoint authorization remains authoritative.
 
 ## Proposed modules (not final)
 

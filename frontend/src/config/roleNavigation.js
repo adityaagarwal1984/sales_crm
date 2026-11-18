@@ -34,7 +34,7 @@ export const roleNavigation = {
     greeting: "Good morning, Aditya",
     items: [
       dashboardItem,
-      { label: "Users & roles", icon: Users },
+      { label: "Users & roles", icon: Users, href: "/admin/users", available: true },
       { label: "Targets", icon: Target },
       { label: "System settings", icon: Settings2 },
     ],

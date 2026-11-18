@@ -1,6 +1,7 @@
 import { Bell, ChevronDown, Menu, Settings2 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { roleLabels, roleNavigation, roleOrder } from "@/config/roleNavigation";
+import { roleLabels, roleNavigation } from "@/config/roleNavigation";
+import { useAuth } from "@/auth/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { SearchInput } from "@/components/crm/SearchInput";
@@ -10,6 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export function TopBar({ role, search, onSearchChange, onMenuClick }) {
+  const { user, logout } = useAuth();
   const current = roleNavigation[role];
   const initial = roleLabels[role].charAt(0);
 
@@ -23,7 +25,7 @@ export function TopBar({ role, search, onSearchChange, onMenuClick }) {
       </div>
 
       <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
-        <Badge tone="neutral" className="hidden sm:inline-flex">Preview</Badge>
+        <Badge tone="neutral" className="hidden sm:inline-flex">{role === "ADMIN" ? "Admin" : "Preview"}</Badge>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" aria-label="Notifications" className="relative text-slate-500">
@@ -43,27 +45,17 @@ export function TopBar({ role, search, onSearchChange, onMenuClick }) {
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-10 gap-2 px-1.5 sm:px-2" aria-label="Open demo profile menu">
-              <span className="grid size-8 place-items-center rounded-full bg-blue-100 text-xs font-semibold text-blue-700">{initial}</span>
-              <span className="hidden text-left sm:block"><span className="block text-xs font-medium text-slate-800">{current.greeting.replace("Good morning, ", "")}</span><span className="block text-[10px] text-slate-500">{roleLabels[role]}</span></span>
+            <Button variant="ghost" className="h-10 gap-2 px-1.5 sm:px-2" aria-label="Open profile menu">
+              <span className="grid size-8 place-items-center rounded-full bg-blue-100 text-xs font-semibold text-blue-700">{(user?.fullName||initial).charAt(0)}</span>
+              <span className="hidden text-left sm:block"><span className="block text-xs font-medium text-slate-800">{user?.fullName}</span><span className="block text-[10px] text-slate-500">{roleLabels[user?.role||role]}</span></span>
               <ChevronDown className="hidden size-3.5 text-slate-400 sm:block" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-60">
-            <DropdownMenuLabel className="font-normal"><span className="block font-medium text-slate-800">Demo profile</span><span className="mt-0.5 block text-xs text-slate-500">Visual role switcher · no authentication</span></DropdownMenuLabel>
+            <DropdownMenuLabel className="font-normal"><span className="block font-medium text-slate-800">{user?.fullName}</span><span className="mt-0.5 block text-xs text-slate-500">{user?.email}</span></DropdownMenuLabel>
+            {user?.role === "ADMIN" && <DropdownMenuItem asChild><Link to="/admin/users">Users & roles</Link></DropdownMenuItem>}
             <DropdownMenuSeparator />
-            <DropdownMenuLabel className="flex items-center gap-2"><Settings2 className="size-3.5" /> Switch dashboard</DropdownMenuLabel>
-            {roleOrder.map((nextRole) => (
-              <DropdownMenuItem key={nextRole} asChild disabled={nextRole === role}>
-                <Link to={`/${roleNavigation[nextRole].dashboard}`} aria-label={`Switch to ${roleLabels[nextRole]}`}>
-                  <span className="grid size-6 place-items-center rounded-md bg-slate-100 text-[10px] font-semibold text-slate-600">{nextRole.slice(0, 1)}</span>
-                  <span className="flex-1">{roleLabels[nextRole]}</span>
-                  {nextRole === role ? <span className="text-[10px] text-blue-600">Current</span> : null}
-                </Link>
-              </DropdownMenuItem>
-            ))}
-            <DropdownMenuSeparator />
-            <DropdownMenuItem disabled>Profile settings · coming later</DropdownMenuItem>
+            <DropdownMenuItem onClick={logout}>Sign out</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

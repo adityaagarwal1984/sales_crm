@@ -1,0 +1,114 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-identity-tables
+      author: prosperr
+      changes:
+        - createTable:
+            tableName: app_role
+            columns:
+              - column:
+                  name: code
+                  type: varchar(32)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: display_name
+                  type: varchar(80)
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: app_user
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: full_name
+                  type: varchar(120)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(320)
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: uq_app_user_email
+              - column:
+                  name: password_hash
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role_code
+                  type: varchar(32)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: active
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+              - column:
+                  name: must_change_password
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+              - column:
+                  name: credentials_changed_at
+                  type: timestamp with time zone
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp with time zone
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamp with time zone
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: app_user
+            baseColumnNames: role_code
+            referencedTableName: app_role
+            referencedColumnNames: code
+            constraintName: fk_app_user_role
+        - sql:
+            sql: CREATE UNIQUE INDEX uq_app_user_email_normalized ON app_user (lower(email));
+            dbms: postgresql
+        - insert:
+            tableName: app_role
+            columns:
+              - column: { name: code, value: ADMIN }
+              - column: { name: display_name, value: Administrator }
+        - insert:
+            tableName: app_role
+            columns:
+              - column: { name: code, value: BDR }
+              - column: { name: display_name, value: Business Development }
+        - insert:
+            tableName: app_role
+            columns:
+              - column: { name: code, value: SALES_MANAGER }
+              - column: { name: display_name, value: Sales Manager }
+        - insert:
+            tableName: app_role
+            columns:
+              - column: { name: code, value: AE }
+              - column: { name: display_name, value: Account Executive }
+        - insert:
+            tableName: app_role
+            columns:
+              - column: { name: code, value: LEADERSHIP }
+              - column: { name: display_name, value: Leadership }

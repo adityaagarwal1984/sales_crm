@@ -38,11 +38,12 @@ export function Sidebar({ role, open = false, onClose }) {
           {config.items.map((item) => {
             const Icon = item.icon;
             if (item.available) {
-              const active = location.pathname === dashboardPath;
+              const target = item.href || dashboardPath;
+              const active = location.pathname === target;
               return (
                 <Link
                   key={item.label}
-                  to={dashboardPath}
+                  to={target}
                   onClick={onClose}
                   aria-current={active ? "page" : undefined}
                   className={cn("flex h-10 items-center gap-3 rounded-md px-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500", active ? "bg-blue-50 font-medium text-blue-700" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900")}
@@ -63,7 +64,7 @@ export function Sidebar({ role, open = false, onClose }) {
         <div className="space-y-3 border-t border-slate-100 p-4">
           <div className="flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-2.5">
             <BadgeCheck className="size-4 text-emerald-600" aria-hidden="true" />
-            <div><p className="text-xs font-medium text-slate-700">Design preview</p><p className="text-[10px] text-slate-500">Illustrative data only</p></div>
+            <div><p className="text-xs font-medium text-slate-700">{role === "ADMIN" ? "Account secured" : "Design preview"}</p><p className="text-[10px] text-slate-500">{role === "ADMIN" ? "Role-based access enabled" : "Illustrative data only"}</p></div>
           </div>
           <button type="button" className="flex items-center gap-2 px-2 text-xs text-slate-500 hover:text-slate-800"><CircleHelp className="size-4" /> Help & feedback</button>
         </div>

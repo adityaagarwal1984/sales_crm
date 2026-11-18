@@ -16,11 +16,11 @@ These questions are intentionally explicit: the supplied brief calls out purpose
 
 ## Blocking architecture / data questions
 
-10. **Authentication:** Is login local, company SSO, or another identity provider? How are accounts provisioned and disabled? Is JWT mandated by deployment/security policy, and what token lifecycle/transport is approved?
+10. **JWT session details:** Block 2 confirms local email/password login and JWTs. What transport and lifetime are approved? Should the frontend retain an access token in memory, or should the app use an HttpOnly cookie plus CSRF protection? Is there a refresh-token flow?
 11. **Data requirements:** Required fields, unique identifiers, duplicate rules, retention/deletion, audit trail, privacy/consent, and import/export needs?
 12. **Integrations:** Must email, calendar, calling/telephony, lead sources, or implementation systems be integrated in the MVP?
 13. **Deployment constraints:** Approved hosting, environments, database hosting/version, domain/origin, secret management, backups, and release process?
-14. **Supported versions/tools:** Required Java/Spring Boot/PostgreSQL versions and build/CI standards from Prosperr? Node.js 24 LTS was selected for this local frontend block because it is an LTS line compatible with Vite; confirm whether Prosperr requires a different Node version or package manager.
+14. **Supported versions/tools:** Does Prosperr require particular Java/Spring Boot/PostgreSQL versions or build/CI standards? The local baseline is Java 21, Spring Boot 3.5.16, Maven 3.10.1, and Node.js 24 LTS. Confirm any company standard before deployment or team handoff.
 15. **Nonfunctional requirements:** Expected users/data volume, response times, availability, accessibility standard, supported browsers/devices, and recovery objectives?
 
 ## Product and UX questions
@@ -31,6 +31,13 @@ These questions are intentionally explicit: the supplied brief calls out purpose
 19. What notifications are expected for follow-ups, review decisions, assignment, overdue work, and handover?
 20. What dashboard metrics and visualizations are decision-useful for each role, and how should each metric be calculated?
 
+## Block 2 decisions
+
+- First admin: one-time environment-backed bootstrap, with no public signup.
+- Roles: exactly one role per account.
+- Password reset: admin sets temporary password; user changes it at next login.
+- Token: 15-minute access JWT returned in response, held in memory, no refresh token. User active state is checked on every request.
+
 ## Answers / decision log
 
-No answers have been confirmed yet. Add date, decision owner, decision, and impacted documents below as answers are received.
+The user supplied Block 2 requirements on 2026-11-18: local email/password login, JWT authentication, the five named roles, admin user management, inactive-account login rejection, and password-hash exclusion from API responses. The user confirmed the recommended defaults on 2026-11-18: 15-minute access JWT returned in the response and held in memory, no refresh token; one role per account; first admin provisioned from environment variables; administrator-set temporary password with mandatory change at first login.
