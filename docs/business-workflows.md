@@ -1,6 +1,6 @@
 # Business Workflows
 
-**Status: Partial implementation.** The BDR-owned lead, calling, follow-up, and SQL submission path is implemented. SQL qualification and manager review remain unconfirmed.
+**Status: Implemented through SQL qualification review.** AE assignment and later sales stages remain for subsequent blocks.
 
 ## 1. BDR discovery and submission
 
@@ -8,17 +8,21 @@
 2. BDR creates a sales pursuit (lead) linked to an organisation and primary contact.
 3. Each call appends an immutable activity record; an optional next follow-up creates a separate pending record.
 4. Completing a follow-up appends another call and links it to the completed follow-up; optional next follow-up creates a new pending record.
-5. BDR submits a lead as an SQL, creating a separate record in `SUBMITTED` state.
-6. SALES_MANAGER receives the SQL submission with its lead, organisation, and primary contact context.
-7. SALES_MANAGER reviews and assigns it to an AE in the next workflow block.
+5. After an interested call, the BDR creates a qualification draft linked to that lead, organisation, and primary contact.
+6. BDR records company size, industry, requirement, decision-maker information, estimated value, timeline, notes, and supporting information.
+7. BDR may save an incomplete draft. Submission requires a business requirement, decision-maker yes/no, deal value, and timeline; details are required when a decision-maker is identified.
+8. Submission enters the Sales Manager review queue. Drafts remain visible only to their owning BDR.
+9. Sales Manager reviews and approves or rejects with a reason. Reviewer and timestamp are saved, and every create/save/submit/decision appends a history snapshot.
+10. A rejected qualification can be revised and resubmitted. Only one qualification record exists for a lead, retaining its full decision history.
+11. An approved qualification is marked eligible for AE assignment. The manager-to-AE assignment occurs in a later workflow block.
 
-**Unknown:** qualification criteria, required evidence/fields, duplicate handling, rejection/rework path, review SLA, assignment rules, and whether assignment requires AE acceptance. The SQL intake queue is implemented; review decisions and AE assignment are not. Leads and their activities are visible to their owning BDR; managers see linked lead context through submissions.
+**Still to confirm:** detailed acceptance criteria, deal-value currency, review SLA, assignment rules, and whether assignment requires AE acceptance. Leads and their activities remain visible to their owning BDR; Sales Managers receive submitted qualifications and linked lead/contact context.
 
 ## 2. Manager review and assignment
 
-1. SALES_MANAGER views pending submissions.
-2. Manager reviews and records a decision.
-3. An accepted submission is assigned to an AE.
+1. SALES_MANAGER views submitted SQL qualifications and their history.
+2. Manager approves or rejects with a reason; the decision actor and time are recorded.
+3. A later workflow assigns approved qualifications to AEs.
 
 **Unknown:** allowed decisions, approval authority, assignment load-balancing, reassignment, notification, and audit requirements.
 

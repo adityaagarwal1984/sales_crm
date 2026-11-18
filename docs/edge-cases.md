@@ -19,7 +19,7 @@
 ## Follow-ups and workflow
 
 - Follow-up is overdue, rescheduled, completed late, or assigned to a deactivated user.
-- SQL submission is duplicated, incomplete, rejected, resubmitted, or changed after review.
+- SQL qualification is duplicated, incomplete, rejected, resubmitted, or changed after approval; drafts must remain private to the BDR and every transition must appear in immutable history.
 - Submission is assigned while the AE is inactive or at capacity.
 - Meeting stages are skipped/repeated, or a meeting is cancelled/no-show.
 - Opportunity is marked Won/Lost more than once, reopened, or handed over twice.

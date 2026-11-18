@@ -1,8 +1,8 @@
 package com.prosperr.crm.prospecting.service;
 
 import com.prosperr.crm.identity.domain.UserEntity;
-import com.prosperr.crm.identity.security.CrmPrincipal;
 import com.prosperr.crm.identity.domain.RoleCode;
+import com.prosperr.crm.identity.security.CrmPrincipal;
 import com.prosperr.crm.identity.repository.UserRepository;
 import com.prosperr.crm.organisation.domain.ContactEntity;
 import com.prosperr.crm.organisation.domain.OrganisationEntity;
@@ -23,9 +23,9 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class ProspectingService {
     private final LeadRepository leads; private final CallActivityRepository calls; private final FollowUpRepository followUps; private final SqlSubmissionRepository sqls;
-    private final OrganisationRepository organisations; private final ContactRepository contacts; private final UserRepository users;
+    private final OrganisationRepository organisations; private final ContactRepository contacts; private final UserRepository users; private final SqlQualificationRepository sqlQualifications;
 
-    public ProspectingService(LeadRepository leads,CallActivityRepository calls,FollowUpRepository followUps,SqlSubmissionRepository sqls,OrganisationRepository organisations,ContactRepository contacts,UserRepository users){this.leads=leads;this.calls=calls;this.followUps=followUps;this.sqls=sqls;this.organisations=organisations;this.contacts=contacts;this.users=users;}
+    public ProspectingService(LeadRepository leads,CallActivityRepository calls,FollowUpRepository followUps,SqlSubmissionRepository sqls,OrganisationRepository organisations,ContactRepository contacts,UserRepository users,SqlQualificationRepository sqlQualifications){this.leads=leads;this.calls=calls;this.followUps=followUps;this.sqls=sqls;this.organisations=organisations;this.contacts=contacts;this.users=users;this.sqlQualifications=sqlQualifications;}
 
     @Transactional(readOnly=true)
     public Page<LeadView> listLeads(CrmPrincipal principal,String search,int page,int size){Pageable pageable=pageable(page,size,Sort.by(Sort.Direction.DESC,"createdAt"));String normalized=clean(search);Page<LeadEntity> result=normalized==null?leads.findByOwner_IdOrderByCreatedAtDesc(principal.id(),pageable):leads.searchByOwner(principal.id(),"%"+normalized.toLowerCase(Locale.ROOT)+"%",pageable);return result.map(this::leadView);}
@@ -50,12 +50,10 @@ public class ProspectingService {
     @Transactional
     public CallResult completeFollowUp(CrmPrincipal principal,UUID id,FollowUpCallInput input){FollowUpEntity followUp=followUp(principal,id);validateNextFollowUp(input.calledAt(),input.nextFollowUpAt());if(followUp.getStatus()!=FollowUpStatus.PENDING)throw new ResponseStatusException(HttpStatus.CONFLICT,"Only pending follow-ups can be completed");UserEntity actor=user(principal.id());CallActivityEntity call=calls.save(new CallActivityEntity(followUp.getLead(),followUp.getContact(),actor,input.calledAt(),input.outcome(),clean(input.notes()),input.nextFollowUpAt()));followUp.getLead().recordLatestCall(input.outcome(),input.calledAt());followUp.complete(call,Instant.now());FollowUpEntity next=input.nextFollowUpAt()==null?null:followUps.save(new FollowUpEntity(followUp.getLead(),followUp.getContact(),call,followUp.getOwner(),actor,input.nextFollowUpAt()));return new CallResult(callView(call),next==null?null:followUpView(next));}
 
-    @Transactional
-    public SqlSubmissionView createSqlSubmission(CrmPrincipal principal,UUID leadId){LeadEntity lead=lead(principal,leadId);SqlSubmissionEntity submission=sqls.save(new SqlSubmissionEntity(lead,user(principal.id())));return sqlView(submission);}
     @Transactional(readOnly=true)
     public Page<SqlSubmissionView> sqlSubmissions(CrmPrincipal principal,int page,int size){Pageable pageable=pageable(page,size,Sort.by(Sort.Direction.DESC,"submittedAt"));Page<SqlSubmissionEntity> submissions=principal.role()==RoleCode.SALES_MANAGER?sqls.findAllByOrderBySubmittedAtDesc(pageable):sqls.findBySubmittedBy_IdOrderBySubmittedAtDesc(principal.id(),pageable);return submissions.map(this::sqlView);}
     @Transactional(readOnly=true)
-    public DashboardView dashboard(CrmPrincipal principal){Instant now=Instant.now();UUID userId=principal.id();return new DashboardView(leads.countByOwner_Id(userId),organisations.countByCreatedBy_Id(userId),contacts.countByCreatedBy_Id(userId),calls.countByCreatedBy_Id(userId),leads.countByOwner_IdAndLastCallOutcome(userId,CallOutcome.INTERESTED),sqls.countBySubmittedBy_Id(userId),followUps.countByOwner_IdAndStatusAndDueAtGreaterThanEqual(userId,FollowUpStatus.PENDING,now),followUps.countByOwner_IdAndStatusAndDueAtBefore(userId,FollowUpStatus.PENDING,now));}
+    public DashboardView dashboard(CrmPrincipal principal){Instant now=Instant.now();UUID userId=principal.id();return new DashboardView(leads.countByOwner_Id(userId),organisations.countByCreatedBy_Id(userId),contacts.countByCreatedBy_Id(userId),calls.countByCreatedBy_Id(userId),leads.countByOwner_IdAndLastCallOutcome(userId,CallOutcome.INTERESTED),sqlQualifications.countByCreatedBy_IdAndStatusNot(userId,SqlQualificationStatus.DRAFT),followUps.countByOwner_IdAndStatusAndDueAtGreaterThanEqual(userId,FollowUpStatus.PENDING,now),followUps.countByOwner_IdAndStatusAndDueAtBefore(userId,FollowUpStatus.PENDING,now));}
 
     private LeadEntity lead(CrmPrincipal principal,UUID id){return leads.findByIdAndOwner_Id(id,principal.id()).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Lead not found"));}
     private FollowUpEntity followUp(CrmPrincipal principal,UUID id){return followUps.findByIdAndOwner_Id(id,principal.id()).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Follow-up not found"));}

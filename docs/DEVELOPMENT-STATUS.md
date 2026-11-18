@@ -4,7 +4,7 @@
 
 ## Current phase
 
-Blocks 0–3 are implemented. Block 2.5 architecture review and engineering guidelines are documented. Block 3 adds organisation and contact management.
+Blocks 0–4 are implemented. Block 2.5 architecture review and engineering guidelines are documented. Block 4 now includes BDR-owned leads, append-only calls and follow-ups, plus a draft → manager review SQL qualification workflow.
 
 ## Completed
 
@@ -21,13 +21,18 @@ Blocks 0–3 are implemented. Block 2.5 architecture review and engineering guid
 - Implemented PostgreSQL/Liquibase roles and users, BCrypt login, 15-minute JWTs, active-user checks per request, first-admin bootstrap, forced password changes, admin user CRUD/status/reset endpoints, and React auth routes/admin screens.
 - Connected frontend authentication to the API; removed the demo role switcher and gated role-specific dashboards by signed-in role.
 - Implemented Block 3 organisation/contact entities, repositories, DTOs, services, REST APIs, Liquibase migration, duplicate constraints, paginated search/filtering, and BDR/ADMIN server authorization.
-- Made the shared organisation/contact directory readable across all CRM roles while keeping create/edit access with BDR and ADMIN.
+- Implemented Block 4 lead and calling workflows with BDR ownership, dashboard metrics, immutable call history, and follow-up scheduling/rescheduling/completion. The initial minimal SQL submission endpoint was superseded by the qualification flow below.
+- Connected BDR dashboard, leads, lead call history, calls, follow-ups, and SQL qualification screens to the backend. BDR navigation now opens these live screens.
+- Made organisations and contacts readable across all CRM roles while keeping create/edit access with BDR and ADMIN. Sales Managers receive submitted qualifications with linked lead and primary-contact context; assignment to an AE remains the next workflow block.
+- Implemented SQL qualification drafts, submission, manager approval/rejection, rejection feedback, resubmission, and append-only qualification history. Approved records are marked eligible for AE assignment; this module does not assign an AE.
+- Added Liquibase changeset 003 for BDR prospecting tables and contact creator attribution; updated API and ER documentation plus ADR-0006.
 - Added organisation and contact listing/detail pages, create/edit forms, organisation profile contact section, search, and pagination; records load from the backend API.
+- Updated the ER diagram, API documentation, implementation log, architecture decision record, and current development status. Recorded shared-access and duplicate rules as provisional assumptions for tech-lead confirmation.
 
 ## Open / blocked on decisions
 
-- Confirm organisation/contact duplicate rules and controlled vocabularies with the tech lead.
-- Ownership and manager scope for future sales workflow records.
+- Detailed SQL acceptance criteria and any currency convention for estimated deal value.
+- Role/ownership/manager scope and record visibility.
 - MVP boundary and acceptance criteria for business features.
 - Production database/service configuration and access-control review.
 - Data model, status transitions, reporting definitions, and deployment constraints.
@@ -41,7 +46,7 @@ Block 2 implementation is running locally against the installed PostgreSQL 18.7 
 
 ## Next action
 
-Review Block 3 duplicate, taxonomy, and shared-directory defaults with the tech lead before extending the data model.
+Implement the next workflow block for Sales Manager → AE assignment after clarifying assignment scope and rules. Confirm the Interested Prospects metric rule (latest call outcome) and SQL acceptance criteria with the tech lead.
 
 ## Verification
 
@@ -54,3 +59,5 @@ Review Block 3 duplicate, taxonomy, and shared-directory defaults with the tech 
 - First run against local PostgreSQL 18.7 — Liquibase migration succeeded; initial admin login returned HTTP 200 with `mustChangePassword=true`; Admin dashboard summary returned one active account.
 - Block 2.5 — inspected frontend/backend architecture, entities, auth/security, DTOs, reusable UI, tests, and existing ADRs; documented principles, pattern decisions, review findings, quality standards, and implementation history. Its principles guided Block 3.
 - Block 3 — frontend `npm test` passed (4 route tests); `npm run build` passed. Backend `mvn -Dmaven.repo.local=/Users/adityaagarwal/.local/m2 test -q` passed: Block 2 integration (1) and Block 3 integration (1), H2 in PostgreSQL compatibility mode. The UI production build reports a main-bundle chunk-size advisory. Local PostgreSQL now records Liquibase changesets `001` and `002`; the organisation/contact tables and normalized indexes are present. A runtime PostgreSQL `lower(bytea)` error was traced to optional string query bindings; search filters now normalize inputs in Java before binding, with the backend suite passing and equivalent filter SQL verified against PostgreSQL.
+- Block 4 — `npm run build` passed (Vite reports a bundle-size advisory); backend `mvn test` passed, 3 tests total including a prospecting integration flow for lead creation, interested call, follow-up completion with a new call, SQL submission, dashboard metrics, and role rejection. The tests use H2 in PostgreSQL compatibility mode; the local PostgreSQL migration has not been verified in this turn.
+- Block 4 SQL qualification — backend `mvn test` passed (3 integration tests total, including draft/duplicate prevention, submit, manager review and rejection, BDR resubmission, approval audit, eligibility flag, and role checks); frontend `npm test` passed (5 tests); `npm run build` passed with the existing bundle-size advisory. Liquibase changeset 004 was exercised in H2 PostgreSQL compatibility mode; apply it to local PostgreSQL by restarting the backend.

@@ -58,9 +58,12 @@ The persisted model currently contains `UserEntity` → `RoleEntity` with a sing
 | ADR-0002 | Use Java 21, Spring Boot 3.5.16, and Maven for the local baseline, pending company standard confirmation. | Accepted locally; confirmation still open | [ADR-0002](adr/ADR-0002-java-spring-maven-baseline.md) |
 | ADR-0003 | Use local credentials, one role per account, 15-minute access JWTs in frontend memory, and one-time environment-backed admin bootstrap. | Accepted for Block 2 | [ADR-0003](adr/ADR-0003-identity-and-session.md) |
 | ADR-0004 | Introduce design patterns only to solve a named recurring problem; record the selection or the simpler alternative. | Proposed engineering rule for review | [ADR-0004](adr/ADR-0004-pattern-adoption.md) |
+| ADR-0005 | Keep organisation/contact directories shared while retaining creator traceability. | Implemented | [ADR-0005](adr/ADR-0005-organisation-contact-boundary.md) |
+| ADR-0006 | Model BDR prospecting with owned leads, append-only calls, and independent follow-ups. | Implemented; its initial SQL submission design is superseded | [ADR-0006](adr/ADR-0006-bdr-prospecting-workflow.md) |
+| ADR-0007 | Use a separate qualification lifecycle and append-only manager review history; approval only grants downstream eligibility. | Implemented | [ADR-0007](adr/ADR-0007-sql-qualification-review.md) |
 
-Business workflow definitions, record ownership, manager scope, SQL qualification, status transitions, audit/retention, reporting, and deployment controls remain open in [Open Questions](OPEN-QUESTIONS.md). Those decisions can change future module boundaries; do not encode guesses as framework abstractions.
+Detailed SQL acceptance scoring, currency, manager team scope, audit retention, reporting, and deployment controls remain open in [Open Questions](OPEN-QUESTIONS.md). Implemented behavior and confirmed role boundaries are recorded in the relevant ADRs.
 
-## Review gate before Block 3
+## Historical review gate before Block 3
 
-The review and recommendations are documented. Block 3 remains unstarted. The tech lead should review this document, [Design Principles](DESIGN-PRINCIPLES.md), [Design Patterns](DESIGN-PATTERNS.md), and [Code Quality Standards](CODE-QUALITY-STANDARDS.md), then approve or adjust them before business-module implementation begins.
+This was the original gate when the review was written. Blocks 3 and 4 have since been implemented from subsequent user instructions; this section is retained as a historical note.

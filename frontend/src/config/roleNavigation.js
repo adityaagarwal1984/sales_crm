@@ -53,7 +53,7 @@ export const roleNavigation = {
       { label: "My leads", icon: Target, href: "/bdr/leads", available: true },
       { label: "Calls", icon: Phone, href: "/bdr/calls", available: true },
       { label: "Follow-ups", icon: CalendarDays, href: "/bdr/follow-ups", available: true },
-      { label: "SQL submissions", icon: ClipboardCheck, href: "/bdr/sql-submissions", available: true },
+      { label: "SQL qualifications", icon: ClipboardCheck, href: "/bdr/sql-qualifications", available: true },
     ],
   },
   SALES_MANAGER: {
@@ -62,7 +62,7 @@ export const roleNavigation = {
     items: [
       dashboardItem,
       ...sharedDirectoryItems,
-      { label: "SQL submissions", icon: ClipboardCheck, href: "/sales-manager/sql-review", available: true },
+      { label: "SQL review queue", icon: ClipboardCheck, href: "/sales-manager/sql-qualifications", available: true },
       { label: "AE assignments", icon: UserRoundCheck },
       { label: "Team performance", icon: BarChart3 },
       { label: "Revival queue", icon: Activity },

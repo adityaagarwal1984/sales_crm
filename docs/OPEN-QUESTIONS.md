@@ -5,7 +5,7 @@ These questions are intentionally explicit: the supplied brief calls out purpose
 ## Blocking business questions
 
 1. **MVP / first workflow:** Which end-to-end workflow must the internship project deliver first, and what is explicitly out of scope for the MVP?
-2. **SQL definition:** What does “SQL” mean at Prosperr, what exact qualification criteria/fields are required, and what are the review outcomes and resubmission path?
+2. **SQL definition:** What does “SQL” mean at Prosperr, what detailed acceptance criteria apply, and what currency is used for estimated deal value? The qualification fields, DRAFT/SUBMITTED/APPROVED/REJECTED states, manager rejection reason, and resubmission path are implemented from the Block 4 brief.
 3. **Organisation and customer lifecycle:** Are a prospect organisation, customer, account, and opportunity distinct concepts? When does an organisation become a customer, and how is “inactive” defined?
 4. **Opportunity lifecycle:** What are the exact stages and allowed transitions? Are L1/L2/L3 meetings stages, meeting types, or required milestones? Can they be skipped or repeated?
 5. **Won/Lost and handover:** Required close data/reasons? Can outcomes be reopened? What information is required for handover, and who accepts it?
@@ -40,6 +40,7 @@ These questions are intentionally explicit: the supplied brief calls out purpose
 
 ## Answers / decision log
 
-- **Block 3 decisions (2026-11-19):** All roles can read the shared organisation/contact directory; BDR and ADMIN can create/edit; organisation creator is retained for traceability; industry/company-size/lead-source remain free text; organisation name is duplicate-checked after trim and case-folding; contact email is optional and duplicate-checked within one organisation only. See [ADR-0005](adr/ADR-0005-organisation-contact-boundary.md).
+- **Block 3 provisional defaults (2026-11-19; confirm with tech lead):** BDR and ADMIN share access to organisation/contact records; `createdBy` is traceability only; industry/company-size/lead-source remain free text; organisation name is duplicate-checked after trim and case-folding; contact email is optional and duplicate-checked within one organisation only. These assumptions are recorded in [ADR-0005](adr/ADR-0005-organisation-contact-boundary.md).
+- **Block 4 implementation choices (2026-11-19):** Completing a follow-up logs a new call so call history remains append-only. BDR-owned leads, calls, follow-ups, and drafts remain private; Sales Managers see submitted qualifications and reviewed records. Every qualification review event stores reviewer/action/time and a snapshot; approval only marks eligibility for a later AE assignment. Shared organisation/contact reads and BDR/ADMIN writes remain in force. See [ADR-0006](adr/ADR-0006-bdr-prospecting-workflow.md) and [ADR-0007](adr/ADR-0007-sql-qualification-review.md).
 
 The user supplied Block 2 requirements on 2026-11-18: local email/password login, JWT authentication, the five named roles, admin user management, inactive-account login rejection, and password-hash exclusion from API responses. The user confirmed the recommended defaults on 2026-11-18: 15-minute access JWT returned in the response and held in memory, no refresh token; one role per account; first admin provisioned from environment variables; administrator-set temporary password with mandatory change at first login.

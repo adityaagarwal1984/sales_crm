@@ -1,6 +1,6 @@
 # ADR-0006: Model BDR Prospecting as Owned Leads, Immutable Calls, Follow-ups, and SQL Submissions
 
-- **Status:** Implemented with provisional scope and SQL criteria
+- **Status:** Implemented; SQL submission portion superseded by [ADR-0007](ADR-0007-sql-qualification-review.md)
 - **Date:** 2026-11-19
 
 ## Context
@@ -12,7 +12,7 @@ Block 4 requires a BDR workflow connecting existing organisations and contacts t
 - Add a `prospecting` capability inside the existing modular monolith with direct controller → service → repository → entity layering.
 - A lead references one organisation and one primary contact and is owned by its creating BDR. BDRs see their own leads, calls, follow-ups, and submissions. Sales Managers can read the shared SQL intake queue, including linked lead, organisation, and primary contact details; other roles are denied from BDR prospecting routes.
 - Store each call as its own immutable `call_activity` record. `nextFollowUpAt` creates a separate `follow_up` record. Completing a pending follow-up appends a new call and marks that follow-up completed; rescheduling only changes the follow-up due time.
-- Store SQL submissions separately from leads. The initial state is `SUBMITTED`; qualification criteria and manager review are deferred until the business defines them.
+- The initial implementation stored a minimal SQL submission separately from leads. The richer qualification/review lifecycle is defined by ADR-0007.
 - Dashboard totals are all-time. Pending and overdue follow-ups are calculated against the server's current instant. Interested Prospects counts leads whose latest call by call timestamp has outcome `INTERESTED`.
 - Add contact creator attribution for the Contacts Added metric, backfilling existing contacts from the creator of their organisation.
 
@@ -26,9 +26,9 @@ Block 4 requires a BDR workflow connecting existing organisations and contacts t
 
 ## Consequences
 
-- Call history remains append-only; follow-up lifecycle can be queried independently; SQL submissions can repeat and can later acquire review states without redefining leads.
+- Call history remains append-only; follow-up lifecycle can be queried independently. The minimal SQL submission endpoint was replaced by the qualification flow in ADR-0007.
 - Leads, calls, and follow-ups are private to their owning BDR. Sales Managers see SQL submissions and their linked summary for intake. Assignment to an AE is a later workflow step.
-- SQL submission currently captures only the lead, submitter, timestamp, and status. The process is not ready for real qualification until criteria and review transitions are defined.
+- The legacy `sql_submission` table remains for compatibility; new qualification work uses `sql_qualification`.
 - The dashboard's Interested Prospects metric reflects the most recent call outcome, which should be confirmed with the tech lead.
 
 ## Main files

@@ -149,3 +149,18 @@ For a block with no new pattern, add a dated note naming the direct approach and
 - **Trade-offs:** `ProspectingService` currently spans the four closely related prospecting entities. Split it only if upcoming review/assignment workflows create genuinely separate responsibilities.
 
 No Strategy, State, Factory, Observer, Specification, or event-bus pattern was added. The call outcome set and follow-up transition rules are currently fixed and small; simple enums and explicit service methods are clearer until requirements show real policy variation or event consumers.
+
+## Block 4 SQL qualification review (2026-11-19)
+
+**Pattern decision:** Continue the existing MVC, Service Layer, Repository, DTO, and Dependency Injection structure. No additional design pattern was needed.
+
+- **Problem:** Capture qualification details and manage draft, submission, manager approval/rejection, and resubmission while preserving every decision.
+- **Selected approach:** A dedicated qualification aggregate, explicit status enum, transactional service methods, one-to-one lead constraint, and append-only snapshot history.
+- **Alternatives considered:** Fields on the lead, reusing the initial minimal SQL submission table, creating rows per retry, or introducing a generic State/Strategy/event framework. Those options either mix lifecycles, fail to hold history, allow duplicate tracks, or add complexity without multiple state policies.
+- **Classes/files:** `SqlQualificationEntity`, `SqlQualificationHistoryEntity`, `SqlQualificationStatus`, both qualification repositories, `SqlQualificationService`, both qualification controllers, Liquibase changeset 004, and React qualification/review pages.
+- **Actual example:** `SqlQualificationService.reject()` checks the `SUBMITTED` state, requires a reason, records the reviewer and instant, and appends a snapshot event in one transaction. Saving a rejected qualification returns it to draft but does not remove the rejection event.
+- **Benefits:** BDR drafts are private, manager decisions are traceable, resubmissions do not overwrite history, and approved SQLs can be assigned downstream without assigning them here.
+- **Trade-offs:** One qualification per lead prevents parallel qualification tracks; history snapshots consume storage. No detailed scoring policy or currency is assumed.
+- **Tests:** `Block4ProspectingIntegrationTest` exercises duplicate prevention, form/link validation, rejection feedback, resubmission, approval actor/time, eligibility, and authorization.
+
+See [ADR-0007](adr/ADR-0007-sql-qualification-review.md).

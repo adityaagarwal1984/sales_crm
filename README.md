@@ -1,6 +1,6 @@
 # Prosperr Sales CRM
 
-An in-house sales CRM for Prosperr. Blocks 0–3 are implemented: project documentation, React UI foundation, Spring Boot identity/authentication, administrator user management, and organisation/contact management.
+An in-house sales CRM for Prosperr. Blocks 0–4 are implemented: project documentation, React UI foundation, Spring Boot identity/authentication, administrator user management, organisation/contact management, and BDR prospecting with SQL qualification review.
 
 ## Repository layout
 
@@ -20,7 +20,7 @@ Local versions are recorded in [System Architecture](docs/system-architecture.md
 
 ## Local frontend development
 
-Use Node.js 24 LTS. From `frontend/`, run `npm run dev`; run `npm run build` and `npm test` before reviewing changes. Run the backend and PostgreSQL using [`backend/README.md`](backend/README.md). Other role dashboards and their metrics remain illustrative placeholders. Do not add credentials to the repository.
+Use Node.js 24 LTS. From `frontend/`, run `npm run dev`; run `npm run build` and `npm test` before reviewing changes. Run the backend and PostgreSQL using [`backend/README.md`](backend/README.md). Later sales workflows remain illustrative placeholders. Do not add credentials to the repository.
 
 ## Documentation
 

@@ -5,7 +5,10 @@ import com.prosperr.crm.prospecting.domain.FollowUpStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Digits;
 import java.time.Instant;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
@@ -20,6 +23,11 @@ public final class ProspectingDtos {
     public record CallView(UUID id,UUID leadId,String leadTitle,UUID contactId,String contactName,UUID createdById,String createdByName,Instant calledAt,CallOutcome outcome,String notes,Instant nextFollowUpAt,Instant createdAt) {}
     public record FollowUpView(UUID id,UUID leadId,String leadTitle,UUID contactId,String contactName,Instant dueAt,FollowUpStatus status,UUID sourceCallId,CallOutcome sourceCallOutcome,Instant createdAt,Instant updatedAt,Instant completedAt,UUID completedCallId) {}
     public record SqlSubmissionView(UUID id,UUID leadId,String leadTitle,String leadDescription,UUID organisationId,String organisationName,UUID primaryContactId,String primaryContactName,String primaryContactEmail,UUID submittedById,String submittedByName,Instant submittedAt,String status) {}
+    public record SqlQualificationInput(@NotNull UUID leadId,@NotNull UUID organisationId,@NotNull UUID primaryContactId,@Size(max=80) String companySize,@Size(max=120) String industry,@Size(max=10000) String businessRequirement,Boolean decisionMakerIdentified,@Size(max=5000) String decisionMakerDetails,@DecimalMin("0.00") @Digits(integer=12,fraction=2) BigDecimal estimatedDealValue,@Size(max=120) String expectedTimeline,@Size(max=10000) String qualificationNotes,@Size(max=10000) String supportingInformation) {}
+    public record SqlRejectionInput(@NotBlank @Size(max=5000) String reason) {}
+    public record SqlQualificationView(UUID id,UUID leadId,String leadTitle,String leadDescription,UUID organisationId,String organisationName,UUID primaryContactId,String primaryContactName,String primaryContactEmail,String companySize,String industry,String businessRequirement,Boolean decisionMakerIdentified,String decisionMakerDetails,BigDecimal estimatedDealValue,String expectedTimeline,String qualificationNotes,String supportingInformation,String status,UUID createdById,String createdByName,Instant createdAt,Instant updatedAt,Instant submittedAt,UUID reviewedById,String reviewedByName,Instant reviewedAt,String rejectionReason,boolean eligibleForAeAssignment) {}
+    public record SqlQualificationHistoryView(UUID id,UUID actorId,String actorName,String action,String fromStatus,String toStatus,String reason,String snapshotJson,Instant createdAt) {}
+    public record SqlQualificationDetail(SqlQualificationView qualification,List<SqlQualificationHistoryView> history) {}
     public record DashboardView(long myLeads,long organisationsAdded,long contactsAdded,long callsCompleted,long interestedProspects,long sqlsGenerated,long pendingFollowUps,long overdueFollowUps) {}
     public record CallResult(CallView call,FollowUpView followUp) {}
     public record PageResponse<T>(List<T> content,int number,int size,long totalElements,int totalPages) {

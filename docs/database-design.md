@@ -1,6 +1,6 @@
 # Database Design
 
-**Status:** Identity and Block 3 organisation/contact tables are implemented with Liquibase. Later sales workflow entities, record lifecycle, and ownership policy remain conceptual. See the [ER diagram](er-diagram.md).
+**Status:** Identity, Block 3 organisation/contact tables, Block 4 prospecting, and SQL qualification/review are implemented with Liquibase. Later sales workflow entities remain conceptual. See the [ER diagram](er-diagram.md).
 
 ## Candidate concepts
 
@@ -12,7 +12,8 @@
 | Organisation | Prospect/company profile; table `organisation` | Implemented fields and normalized-name duplicate rule; lifecycle/archive policy remains open |
 | Contact | Person at one organisation; table `contact` | Implemented fields and per-organisation email duplicate rule; consent/contact restrictions remain open |
 | Activity / Follow-up | Calls and next actions | Activity types, due-date rules, completion, ownership, audit trail |
-| SQL Submission | BDR submission for review | SQL meaning, qualification criteria, revisions, rejection/rework states |
+| SQL Qualification | BDR qualification of a sales pursuit; one record per lead, with append-only review snapshots | Detailed acceptance rubric and deal-value currency |
+| Legacy SQL Submission | Earlier Block 4 submission row; retained for compatibility/history | Migration or archival plan if legacy rows exist |
 | Opportunity | Sales pursuit assigned to AE | Relationship to organisation, amount/currency, stages, forecast rules |
 | Meeting | L1/L2/L3 event and outcome | Whether stages are fixed, optional/repeatable, attendees, scheduling source |
 | Stakeholder link | Contacts involved in an opportunity | Role labels and whether one person can hold multiple roles |
@@ -31,7 +32,7 @@
 
 ## Migration policy
 
-Liquibase is the schema-change mechanism. The initial migration creates fixed roles and users. Changeset `002-create-organisation-contact-tables` adds `organisation` and `contact`, foreign keys to the creator and parent organisation, normalized duplicate indexes, timestamps, and optimistic-lock versions. On the next backend start connected to PostgreSQL, Liquibase will apply the new changeset automatically.
+Liquibase is the schema-change mechanism. Changeset `004-create-sql-qualification-workflow` adds `sql_qualification` (unique per lead) and append-only `sql_qualification_history`, with reviewer/actor foreign keys and status/history indexes. On the next backend start connected to PostgreSQL, Liquibase applies unapplied changesets automatically.
 
 ## Block 2 identity fields to validate
 
