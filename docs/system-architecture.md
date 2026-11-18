@@ -1,8 +1,8 @@
 # System Architecture
 
-**Status: Proposed; confirm deployment, identity, and integration constraints before implementation.**
+**Status:** Blocks 0–2 implementation snapshot. Deployment, business workflows, integrations, and several operational requirements remain open.
 
-## Proposed shape
+## Current shape
 
 ```mermaid
 flowchart LR
@@ -26,7 +26,7 @@ The frontend uses JavaScript, Vite, and Node.js 24 LTS. The backend build now ta
 - PostgreSQL is the durable source of business records. Liquibase is the controlled schema-change mechanism.
 - The backend is one deployable modular monolith with clear internal modules. Module boundaries should follow confirmed business capabilities rather than speculative microservices.
 
-## Proposed backend layers
+## Implemented backend layers
 
 `controller → service → repository → database`, with request/response DTOs, domain entities kept internal, centralized exception mapping, Jakarta Validation, and transaction boundaries in services.
 
@@ -34,9 +34,9 @@ The frontend uses JavaScript, Vite, and Node.js 24 LTS. The backend build now ta
 
 Block 2 uses BCrypt and 15-minute signed JWT access tokens. The API returns the token at login; React keeps it in memory, with no refresh token. The JWT filter loads the current user on each request so deactivated accounts lose access immediately. One role is assigned per account. The first admin is seeded from environment configuration; admin-issued temporary passwords must be changed at next login. Backend endpoint authorization remains authoritative.
 
-## Proposed modules (not final)
+## Future capabilities (not implemented)
 
-Identity/access, users/targets, organisations/contacts, qualification/review, opportunities/meetings, outcomes/handover, revival, and reporting. Some may combine or split after workflow clarification.
+Targets, organisations/contacts, qualification/review, opportunities/meetings, outcomes/handover, revival, and reporting. Some may combine or split after workflow clarification. Identity/access and basic administrator user management are implemented in Block 2.
 
 ## Operational decisions still open
 
@@ -49,3 +49,4 @@ Java/Spring Boot and Node/package-manager versions; PostgreSQL hosting/version; 
 - Treat server-side authorization and input validation as mandatory.
 - Add indexes and pagination based on query patterns, not guesses.
 - Document changes and database migrations alongside each feature.
+- See the Block 2.5 [architecture review](ARCHITECTURE-DECISIONS.md), [design principles](DESIGN-PRINCIPLES.md), [pattern matrix](DESIGN-PATTERNS.md), and [quality standards](CODE-QUALITY-STANDARDS.md) before starting Block 3.

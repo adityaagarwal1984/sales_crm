@@ -6,7 +6,12 @@ These documents are the source of truth for the discovery and delivery plan. Ite
 |---|---|
 | [Project Overview](project-overview.md) | Purpose, scope, and success measures |
 | [Business Requirements](business-requirements.md) | Confirmed brief and requirement gaps |
-| [System Architecture](system-architecture.md) | Proposed application boundaries and decisions |
+| [System Architecture](system-architecture.md) | Current application boundaries, implementation baseline, and open operations |
+| [Architecture Decisions and Review](ARCHITECTURE-DECISIONS.md) | Review of Blocks 0–2, risks, ADR index, and gate before Block 3 |
+| [Design Principles](DESIGN-PRINCIPLES.md) | Practical SOLID and related principles with CRM examples |
+| [Design Patterns](DESIGN-PATTERNS.md) | Pattern suitability matrix and adoption triggers |
+| [Code Quality Standards](CODE-QUALITY-STANDARDS.md) | Backend/frontend conventions, testing, and future-block checklist |
+| [Pattern Implementation Log](PATTERN-IMPLEMENTATION-LOG.md) | Actual selected patterns, examples, alternatives, benefits, and trade-offs |
 | [Database Design](database-design.md) | Provisional entities, constraints, and data questions |
 | [ER Diagram](er-diagram.md) | Provisional conceptual relationship diagram |
 | [Roles and Permissions](role-permission-matrix.md) | Role capabilities from the supplied brief |

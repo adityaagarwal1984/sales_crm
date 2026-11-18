@@ -1,10 +1,10 @@
 # Development Status
 
-**Last updated:** 2026-11-18
+**Last updated:** 2026-11-19
 
 ## Current phase
 
-Block 1 UI foundation is implemented. Block 2 authentication and administrator access management are implemented as an MVP; business workflow modules remain future work.
+Blocks 0–2 are implemented. Block 2.5 architecture review and engineering guidelines are documented. Business workflow modules remain future work and Block 3 has not started.
 
 ## Completed
 
@@ -32,9 +32,13 @@ Block 1 UI foundation is implemented. Block 2 authentication and administrator a
 
 See [Open Questions](OPEN-QUESTIONS.md).
 
-## Next block
+## Current runtime verification
 
 Block 2 implementation is running locally against the installed PostgreSQL 18.7 server. The first-run script created the `prosperr_crm` database schema and initial administrator; a live login and Admin dashboard API call both returned successfully. The automated integration suite also runs against H2 in PostgreSQL compatibility mode.
+
+## Next action
+
+Present the Block 2.5 review and recommendations to the tech lead for approval. Keep Block 3 unstarted until that review is approved and open business workflow questions are resolved.
 
 ## Verification
 
@@ -45,3 +49,4 @@ Block 2 implementation is running locally against the installed PostgreSQL 18.7 
 - Full `npm audit` reports five high-severity findings in the dev-toolchain dependency chain through `picomatch`. npm offered only a force fix that downgrades Vite across a major version; that change was not applied. Recheck once upstream packages provide a compatible fix.
 - `mvn -Dmaven.repo.local=/Users/adityaagarwal/.local/m2 test` — passed; one Spring integration test covers valid/invalid login, role permissions, account deactivation, duplicate normalized email, password-hash exclusion, and JWT expiration using H2 in PostgreSQL compatibility mode.
 - First run against local PostgreSQL 18.7 — Liquibase migration succeeded; initial admin login returned HTTP 200 with `mustChangePassword=true`; Admin dashboard summary returned one active account.
+- Block 2.5 — inspected frontend/backend architecture, entities, auth/security, DTOs, reusable UI, tests, and existing ADRs; documented principles, pattern decisions, review findings, quality standards, and implementation history. Block 3 awaits approval of the review.

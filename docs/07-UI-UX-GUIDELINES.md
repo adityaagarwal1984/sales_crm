@@ -22,7 +22,7 @@
 
 - `AppShell` owns the persistent sidebar, top navigation, main content width, and footer.
 - The sidebar contains Prosperr workspace branding, current role, role-specific navigation, and a preview status note.
-- The top bar contains search scoped to the current dashboard's preview rows, notifications, and a demo profile menu. The profile menu switches between the five dashboard routes; it is not authentication. On small screens the same search appears in the dashboard toolbar.
+- The top bar contains search scoped to the current dashboard's preview rows, illustrative notifications, and the authenticated profile/logout menu. Role selection is not a UI switcher; the signed-in role determines available routes. On small screens the same search appears in the dashboard toolbar.
 - `PageHeader` supplies breadcrumb, title, description, and optional action placement.
 - Use a fixed-width sidebar on large screens. On small screens, open it as an overlay from the menu button. Main content uses a fluid width capped at 1440px.
 - Only the dashboard route is active for each role in this block. Other entries are visibly marked “Soon” and disabled until their feature blocks are implemented.
@@ -74,7 +74,7 @@ For authentication, use a focused sign-in form with visible field labels and a g
 
 - `npm run dev` — run the Vite preview.
 - `npm run build` — ensure the UI compiles for production.
-- `npm test` — verify authentication routing and forced password change.
+- `npm test` — verify authentication routing and forced password change. Add feature tests alongside future admin and business interactions.
 
 ## Decisions for later review
 
