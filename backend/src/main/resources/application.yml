@@ -15,6 +15,7 @@ app:
   security:
     jwt-secret-base64: ${APP_JWT_SECRET_BASE64:}
   bootstrap:
+    admin-name: ${APP_BOOTSTRAP_ADMIN_NAME:Administrator}
     admin-email: ${APP_BOOTSTRAP_ADMIN_EMAIL:}
     admin-password: ${APP_BOOTSTRAP_ADMIN_PASSWORD:}
   cors:
