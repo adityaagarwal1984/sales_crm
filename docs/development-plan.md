@@ -5,7 +5,7 @@
 | Block | Focus | Exit gate |
 |---|---|---|
 | 0. Discovery and approval | Resolve the blocking questions; confirm definitions, roles, MVP, identity, deployment, and first workflow | Tech lead / manager approves scope and initial decisions |
-| 1. Foundation | Monorepo build setup, shared frontend shell, Spring Boot structure, PostgreSQL connection, Liquibase baseline, OpenAPI, error/validation conventions | Clean local setup and migration; documented smoke path |
+| 1. Foundation | Frontend UI foundation completed in this block; remaining backend foundation includes Spring Boot structure, PostgreSQL connection, Liquibase baseline, OpenAPI, and error/validation conventions | UI build and dashboard routes verified; backend foundation remains a separate approved sub-block |
 | 2. Identity and authorization | Provisioning/authentication choice, role mapping, password/token lifecycle if applicable, server-side access rules | Positive and negative auth tests for all roles/scopes |
 | 3. Organisation/contact work | Searchable organisation and contact records, duplication rules, ownership/audit | Agreed BDR workflow and persistence tests |
 | 4. Activities and SQL submission/review | Calls/follow-ups, qualification fields, review states, assignment | BDR-to-manager workflow accepted end-to-end |

@@ -20,7 +20,7 @@ These questions are intentionally explicit: the supplied brief calls out purpose
 11. **Data requirements:** Required fields, unique identifiers, duplicate rules, retention/deletion, audit trail, privacy/consent, and import/export needs?
 12. **Integrations:** Must email, calendar, calling/telephony, lead sources, or implementation systems be integrated in the MVP?
 13. **Deployment constraints:** Approved hosting, environments, database hosting/version, domain/origin, secret management, backups, and release process?
-14. **Supported versions/tools:** Required Java/Spring Boot/PostgreSQL/Node versions, package manager, and build/CI standards from Prosperr?
+14. **Supported versions/tools:** Required Java/Spring Boot/PostgreSQL versions and build/CI standards from Prosperr? Node.js 24 LTS was selected for this local frontend block because it is an LTS line compatible with Vite; confirm whether Prosperr requires a different Node version or package manager.
 15. **Nonfunctional requirements:** Expected users/data volume, response times, availability, accessibility standard, supported browsers/devices, and recovery objectives?
 
 ## Product and UX questions

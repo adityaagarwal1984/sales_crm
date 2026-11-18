@@ -1,0 +1,130 @@
+export const dashboardData = {
+  ADMIN: {
+    title: "Admin dashboard",
+    description: "A quick view of users, targets, and CRM activity.",
+    metrics: [
+      { label: "Active users", value: "28", change: "+3 this month", icon: "users", tone: "blue" },
+      { label: "Open SQL reviews", value: "16", change: "Across 4 teams", icon: "review", tone: "amber" },
+      { label: "Targets on track", value: "82%", change: "+6.4% vs. last month", icon: "target", tone: "green" },
+      { label: "System activity", value: "1,284", change: "Last 30 days", icon: "activity", tone: "violet" },
+    ],
+    chartTitle: "CRM activity",
+    chartDescription: "Illustrative records created over the last 6 months",
+    chart: [
+      { month: "Jun", created: 128, completed: 98 }, { month: "Jul", created: 145, completed: 112 },
+      { month: "Aug", created: 139, completed: 118 }, { month: "Sep", created: 177, completed: 139 },
+      { month: "Oct", created: 196, completed: 164 }, { month: "Nov", created: 218, completed: 182 },
+    ],
+    tableTitle: "Recent team activity",
+    rows: [
+      { name: "Aarav Mehta", detail: "BDR · West team", action: "Submitted an SQL", status: "In review", date: "10 min ago" },
+      { name: "Isha Nair", detail: "Account Executive", action: "Updated an opportunity", status: "In progress", date: "32 min ago" },
+      { name: "Kabir Shah", detail: "Sales Manager", action: "Assigned an opportunity", status: "Completed", date: "1 hour ago" },
+      { name: "Meera Rao", detail: "BDR · South team", action: "Added a follow-up", status: "Scheduled", date: "2 hours ago" },
+    ],
+  },
+  BDR: {
+    title: "BDR dashboard",
+    description: "Keep prospecting work and upcoming follow-ups in view.",
+    metrics: [
+      { label: "Organisations found", value: "42", change: "+8 this week", icon: "building", tone: "blue" },
+      { label: "Calls completed", value: "86", change: "This month", icon: "phone", tone: "green" },
+      { label: "Follow-ups due", value: "12", change: "4 due today", icon: "calendar", tone: "amber" },
+      { label: "SQLs submitted", value: "9", change: "6 awaiting review", icon: "review", tone: "violet" },
+    ],
+    chartTitle: "Prospecting activity",
+    chartDescription: "Illustrative calls and follow-ups over the last 6 months",
+    chart: [
+      { month: "Jun", calls: 38, followups: 21 }, { month: "Jul", calls: 44, followups: 27 },
+      { month: "Aug", calls: 51, followups: 30 }, { month: "Sep", calls: 48, followups: 34 },
+      { month: "Oct", calls: 63, followups: 41 }, { month: "Nov", calls: 71, followups: 48 },
+    ],
+    tableTitle: "Today's follow-ups",
+    rows: [
+      { name: "Northstar Labs", detail: "Ananya Kapoor · VP People", action: "Discovery call", status: "Due today", date: "10:30 AM" },
+      { name: "BluePeak Systems", detail: "Rajat Sethi · Founder", action: "Send overview", status: "Due today", date: "12:00 PM" },
+      { name: "Kindred Health", detail: "Farah Khan · HR Director", action: "Second touchpoint", status: "Scheduled", date: "2:15 PM" },
+      { name: "Meridian Works", detail: "Neil Thomas · COO", action: "Qualification check-in", status: "Scheduled", date: "4:00 PM" },
+    ],
+  },
+  SALES_MANAGER: {
+    title: "Sales manager dashboard",
+    description: "Review submissions, support the team, and keep handoffs moving.",
+    metrics: [
+      { label: "Pending SQL review", value: "16", change: "5 waiting over 1 day", icon: "review", tone: "amber" },
+      { label: "Team opportunities", value: "38", change: "+12% this quarter", icon: "pipeline", tone: "blue" },
+      { label: "Team target progress", value: "74%", change: "Quarter to date", icon: "target", tone: "green" },
+      { label: "Accounts to revive", value: "7", change: "3 unassigned", icon: "activity", tone: "violet" },
+    ],
+    chartTitle: "Team pipeline movement",
+    chartDescription: "Illustrative opportunities by stage and month",
+    chart: [
+      { month: "Jun", qualified: 28, assigned: 19 }, { month: "Jul", qualified: 33, assigned: 24 },
+      { month: "Aug", qualified: 39, assigned: 29 }, { month: "Sep", qualified: 42, assigned: 31 },
+      { month: "Oct", qualified: 48, assigned: 37 }, { month: "Nov", qualified: 54, assigned: 42 },
+    ],
+    tableTitle: "Submissions awaiting review",
+    rows: [
+      { name: "Northstar Labs", detail: "Submitted by Aarav Mehta", action: "People operations platform", status: "New", date: "14 min ago" },
+      { name: "Orchid Financial", detail: "Submitted by Meera Rao", action: "Employee benefits review", status: "In review", date: "1 hour ago" },
+      { name: "Cedar & Co.", detail: "Submitted by Vihaan Das", action: "Expansion opportunity", status: "Needs info", date: "Yesterday" },
+      { name: "Brightline Retail", detail: "Submitted by Sana Iyer", action: "Initial qualification", status: "In review", date: "Yesterday" },
+    ],
+  },
+  AE: {
+    title: "Account executive dashboard",
+    description: "Focus on active opportunities, meetings, and next steps.",
+    metrics: [
+      { label: "Active opportunities", value: "14", change: "4 moved this week", icon: "pipeline", tone: "blue" },
+      { label: "Meetings this week", value: "8", change: "2 L1 · 4 L2 · 2 L3", icon: "calendar", tone: "violet" },
+      { label: "Pipeline value", value: "₹1.84 Cr", change: "Illustrative INR", icon: "revenue", tone: "green" },
+      { label: "Handoffs to prepare", value: "2", change: "Both won this month", icon: "handover", tone: "amber" },
+    ],
+    chartTitle: "Opportunity progression",
+    chartDescription: "Illustrative opportunities moving through meeting stages",
+    chart: [
+      { month: "Jun", l1: 9, l2: 5 }, { month: "Jul", l1: 11, l2: 6 },
+      { month: "Aug", l1: 13, l2: 8 }, { month: "Sep", l1: 12, l2: 9 },
+      { month: "Oct", l1: 15, l2: 10 }, { month: "Nov", l1: 17, l2: 12 },
+    ],
+    tableTitle: "Next meetings",
+    rows: [
+      { name: "Northstar Labs", detail: "Ananya Kapoor · VP People", action: "L2 · Solution walkthrough", status: "Confirmed", date: "Today · 11:00 AM" },
+      { name: "Atlas Commerce", detail: "Rohan Malhotra · CFO", action: "L3 · Commercial review", status: "Confirmed", date: "Today · 3:30 PM" },
+      { name: "Harbor & Hill", detail: "Nisha Verma · Director", action: "L1 · Discovery", status: "Needs prep", date: "Tomorrow · 10:00 AM" },
+      { name: "Evergreen Mobility", detail: "Sameer Jain · CHRO", action: "L2 · Stakeholder alignment", status: "Confirmed", date: "Thu · 2:00 PM" },
+    ],
+  },
+  LEADERSHIP: {
+    title: "Leadership overview",
+    description: "A high-level view of performance and the sales funnel.",
+    metrics: [
+      { label: "Revenue booked", value: "₹48.2L", change: "+18.6% vs. prior quarter", icon: "revenue", tone: "green" },
+      { label: "Qualified pipeline", value: "₹2.4 Cr", change: "Across 86 opportunities", icon: "pipeline", tone: "blue" },
+      { label: "Win rate", value: "31.8%", change: "+2.4 pts this quarter", icon: "target", tone: "violet" },
+      { label: "Sales cycle", value: "42 days", change: "Median · down 5 days", icon: "calendar", tone: "amber" },
+    ],
+    chartTitle: "Revenue and pipeline trend",
+    chartDescription: "Illustrative INR values across the last 6 months",
+    chart: [
+      { month: "Jun", revenue: 24, pipeline: 58 }, { month: "Jul", revenue: 28, pipeline: 66 },
+      { month: "Aug", revenue: 31, pipeline: 72 }, { month: "Sep", revenue: 35, pipeline: 78 },
+      { month: "Oct", revenue: 41, pipeline: 90 }, { month: "Nov", revenue: 48, pipeline: 98 },
+    ],
+    tableTitle: "Department snapshot",
+    rows: [
+      { name: "West · BDR", detail: "5 team members", action: "42 qualified organisations", status: "On track", date: "74% of target" },
+      { name: "South · BDR", detail: "4 team members", action: "36 qualified organisations", status: "On track", date: "81% of target" },
+      { name: "Enterprise · AE", detail: "8 team members", action: "₹1.26 Cr pipeline", status: "Ahead", date: "108% of target" },
+      { name: "Growth · AE", detail: "6 team members", action: "₹78L pipeline", status: "Needs attention", date: "63% of target" },
+    ],
+  },
+};
+
+export const chartSeries = {
+  ADMIN: [{ key: "created", label: "Created", color: "#2563eb" }, { key: "completed", label: "Completed", color: "#a5b4fc" }],
+  BDR: [{ key: "calls", label: "Calls", color: "#2563eb" }, { key: "followups", label: "Follow-ups", color: "#7c3aed" }],
+  SALES_MANAGER: [{ key: "qualified", label: "Qualified", color: "#2563eb" }, { key: "assigned", label: "Assigned", color: "#14b8a6" }],
+  AE: [{ key: "l1", label: "L1", color: "#2563eb" }, { key: "l2", label: "L2+", color: "#14b8a6" }],
+  LEADERSHIP: [{ key: "revenue", label: "Revenue", color: "#2563eb" }, { key: "pipeline", label: "Pipeline", color: "#a5b4fc" }],
+};

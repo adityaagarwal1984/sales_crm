@@ -12,10 +12,17 @@
 
 ## Frontend
 
-- Component tests for form validation, loading/empty/error states, and role-aware navigation.
+- Vitest and React Testing Library for form validation, loading/empty/error states, and role-aware navigation.
 - API integration tests for success, validation failure, expired session, and forbidden responses.
 - End-to-end tests for the agreed critical cross-role workflows once UI and backend blocks exist.
 - Accessibility checks for keyboard flows, focus, labels, and error announcements.
+
+### Block 1 coverage
+
+- Route tests render all five role dashboards.
+- A navigation test switches between all five dashboards through the demo profile menu.
+- A preview-search test filters the current dashboard's illustrative rows.
+- These tests verify presentation routes only; they do not represent authentication, permissions, or CRM workflow behavior.
 
 ## Quality gates
 

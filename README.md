@@ -1,6 +1,6 @@
 # Prosperr Sales CRM
 
-An in-house sales CRM for Prosperr. This repository is in the **discovery and documentation phase**. Business rules and the initial architecture are recorded as drafts; implementation has not started.
+An in-house sales CRM for Prosperr. The documentation-first discovery phase is complete enough to begin UI work. The **Block 1 frontend foundation** is implemented with illustrative dashboards; business workflows and backend behavior are still unimplemented.
 
 ## Repository layout
 
@@ -18,9 +18,9 @@ React, Vite, JavaScript, Tailwind CSS, shadcn/ui, React Router, Axios, Recharts,
 
 Versions and deployment choices are not fixed until the project constraints are confirmed. See [System Architecture](docs/system-architecture.md).
 
-## Local development
+## Local frontend development
 
-Setup instructions will be added after the repository's Java, Node.js, package manager, and PostgreSQL versions are agreed. Do not add credentials to the repository; use environment variables or a local ignored environment file once configuration is defined.
+Use Node.js 24 LTS. From [`frontend/`](frontend/README.md), run `npm install` and `npm run dev`. Run `npm run build` and `npm test` before reviewing changes. Dashboard values are static illustrative placeholders. Do not add credentials to the repository.
 
 ## Documentation
 
