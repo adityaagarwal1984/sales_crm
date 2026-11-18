@@ -1,0 +1,16 @@
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { Mail, Phone, UserRound } from "lucide-react";
+import { PageHeader } from "@/components/crm/PageHeader";
+import { SearchInput } from "@/components/crm/SearchInput";
+import { EmptyState } from "@/components/crm/EmptyState";
+import { Pagination } from "@/components/crm/Pagination";
+import { Button } from "@/components/ui/button";
+import { api } from "@/lib/api";
+
+export function ContactListPage(){const [data,setData]=useState({content:[],totalElements:0,totalPages:0});const [query,setQuery]=useState("");const [page,setPage]=useState(0);const [loading,setLoading]=useState(true);const [error,setError]=useState("");
+ useEffect(()=>{let alive=true;setLoading(true);const timer=setTimeout(()=>api.get("/contacts",{params:{search:query||undefined,page,size:10}}).then(r=>{if(alive){setData(r.data);setError("");}}).catch(e=>{if(alive)setError(e.response?.data?.message||"Could not load contacts.");}).finally(()=>alive&&setLoading(false)),250);return()=>{alive=false;clearTimeout(timer);};},[query,page]);
+ return <><PageHeader title="Contacts" description="Find people and see the organisations they are connected to." breadcrumb={["Workspace","Contacts"]}/><section className="rounded-xl border border-slate-200 bg-white shadow-card"><div className="border-b border-slate-100 p-4"><SearchInput value={query} onChange={v=>{setQuery(v);setPage(0);}} label="Search contacts" placeholder="Name, email, phone, organisation…" className="sm:w-96"/></div>
+ {error?<p role="alert" className="p-8 text-center text-sm text-rose-600">{error}</p>:loading?<p className="p-8 text-center text-sm text-slate-500">Loading contacts…</p>:!data.content.length?<EmptyState title="No contacts found" description="Add contacts from an organisation profile or adjust your search."/>:<div className="overflow-x-auto"><table className="w-full min-w-[700px] text-left text-sm"><thead><tr className="bg-slate-50 text-xs text-slate-500"><th className="px-5 py-3 font-medium">Person</th><th className="px-5 py-3 font-medium">Organisation</th><th className="px-5 py-3 font-medium">Email</th><th className="px-5 py-3 font-medium">Phone</th><th className="px-5 py-3 font-medium">Department</th></tr></thead><tbody className="divide-y divide-slate-100">{data.content.map(c=><tr key={c.id} className="hover:bg-slate-50/70"><td className="px-5 py-4"><Link to={`/contacts/${c.id}`} className="flex items-center gap-2 font-medium text-slate-900 hover:text-blue-700"><UserRound className="size-4 text-slate-400"/>{c.name}</Link><p className="ml-6 mt-1 text-xs text-slate-500">{c.designation||"—"}</p></td><td className="px-5 py-4"><Link className="text-blue-700 hover:underline" to={`/organisations/${c.organisation.id}`}>{c.organisation.name}</Link></td><td className="px-5 py-4 text-slate-600">{c.email||"—"}</td><td className="px-5 py-4 text-slate-600">{c.phone||"—"}</td><td className="px-5 py-4 text-slate-600">{c.department||"—"}</td></tr>)}</tbody></table></div>}
+ <div className="border-t border-slate-100 px-5 py-3"><Pagination page={page+1} pageCount={data.totalPages} itemCount={data.content.length} onPageChange={v=>setPage(v-1)}/><p className="mt-1 text-xs text-slate-400">{data.totalElements} contacts</p></div></section></>;
+}

@@ -1,6 +1,6 @@
 # Prosperr Sales CRM
 
-An in-house sales CRM for Prosperr. Blocks 0–2 are implemented: discovery documentation, React UI foundation, Spring Boot identity/authentication, and administrator user management. Business workflow modules have not started.
+An in-house sales CRM for Prosperr. Blocks 0–3 are implemented: project documentation, React UI foundation, Spring Boot identity/authentication, administrator user management, and organisation/contact management.
 
 ## Repository layout
 
@@ -10,7 +10,7 @@ An in-house sales CRM for Prosperr. Blocks 0–2 are implemented: discovery docu
 
 ## Current status
 
-See [Development Status](docs/DEVELOPMENT-STATUS.md), [Open Questions](docs/OPEN-QUESTIONS.md), and the [Development Plan](docs/development-plan.md). Block 2.5 is an architecture and engineering-principles review. Block 3 must wait for review of these recommendations and approval.
+See [Development Status](docs/DEVELOPMENT-STATUS.md), [Open Questions](docs/OPEN-QUESTIONS.md), and the [Development Plan](docs/development-plan.md). Block 2.5 documented architecture and engineering-principles guidance applied in Block 3.
 
 ## Stack
 

@@ -1,6 +1,6 @@
 # ADR-0004: Add Design Patterns Only for Demonstrated Needs
 
-- **Status:** Proposed for tech-lead review before Block 3
+- **Status:** Applied to Block 3; pattern selection remains open to review
 - **Date:** 2026-11-19
 
 ## Context

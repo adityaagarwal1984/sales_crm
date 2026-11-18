@@ -1,6 +1,6 @@
 # Database Design
 
-**Status:** The Block 2 identity schema is implemented; business record definitions, ownership, deletion policy, and business relationships remain conceptual. The [ER diagram](er-diagram.md) is provisional.
+**Status:** Identity and Block 3 organisation/contact tables are implemented with Liquibase. Later sales workflow entities, record lifecycle, and ownership policy remain conceptual. See the [ER diagram](er-diagram.md).
 
 ## Candidate concepts
 
@@ -9,8 +9,8 @@
 | User | Login identity, active state, assigned role(s) | Identity provider, one/multiple roles, provisioning, deactivation, manager/team relationship |
 | Role | Authorization role | Fixed enum vs configurable roles; role hierarchy (if any) |
 | Target | Goal assigned to a person/team and period | Metric, unit, dates, hierarchy, edit history |
-| Organisation | Prospect/customer account | Required fields, unique identifiers, lifecycle and duplicate policy |
-| Contact | Person at an organisation | Multiple organisations, consent/contact restrictions, dedupe policy |
+| Organisation | Prospect/company profile; table `organisation` | Implemented fields and normalized-name duplicate rule; lifecycle/archive policy remains open |
+| Contact | Person at one organisation; table `contact` | Implemented fields and per-organisation email duplicate rule; consent/contact restrictions remain open |
 | Activity / Follow-up | Calls and next actions | Activity types, due-date rules, completion, ownership, audit trail |
 | SQL Submission | BDR submission for review | SQL meaning, qualification criteria, revisions, rejection/rework states |
 | Opportunity | Sales pursuit assigned to AE | Relationship to organisation, amount/currency, stages, forecast rules |
@@ -31,7 +31,7 @@
 
 ## Migration policy
 
-Liquibase is the schema-change mechanism. The initial identity migration creates fixed roles and users with normalized unique email, BCrypt hash, active state, forced-password-change flag, credential-change timestamp, and created/updated timestamps. Business tables have not yet been migrated.
+Liquibase is the schema-change mechanism. The initial migration creates fixed roles and users. Changeset `002-create-organisation-contact-tables` adds `organisation` and `contact`, foreign keys to the creator and parent organisation, normalized duplicate indexes, timestamps, and optimistic-lock versions. On the next backend start connected to PostgreSQL, Liquibase will apply the new changeset automatically.
 
 ## Block 2 identity fields to validate
 

@@ -107,6 +107,21 @@ This log distinguishes code the project actually uses from patterns that are rec
 
 Factory Method, custom Adapter, custom Decorator, Facade, Strategy, domain Observer/event bus, State objects, Template Method, and Domain Events are not implemented. Their current fit and triggers are in [`DESIGN-PATTERNS.md`](DESIGN-PATTERNS.md). Do not list them as implemented merely because the frameworks expose related features.
 
+## Block 3 — Organisation and Contact Management (2026-11-19)
+
+**Pattern decision:** No new named design pattern was needed. The simple, existing modular-monolith layers were reused.
+
+- **Problem:** Persist and manage organisations and people, support search/pagination, and avoid treating a person as a sales pursuit.
+- **Selected approach:** Feature-scoped MVC/REST controllers, a cohesive service for validation/use-case orchestration, Spring Data repositories for persistence queries, DTOs for API boundaries, constructor injection, Liquibase-owned PostgreSQL schema, and explicit role authorization.
+- **Alternatives considered:** Generic repository/service abstractions (no demonstrated second implementation); Specification objects for every field (fixed filters fit one JPQL query per repository); Strategy/Factory (one creation flow); domain events (no independent consumers); event bus/outbox (no asynchronous side effects); ownership framework (ownership behavior not specified).
+- **Classes/files:** `organisation/api/OrganisationController.java`, `ContactController.java`, `OrganisationDtos.java`; `organisation/service/OrganisationService.java`; `organisation/repository/OrganisationRepository.java`, `ContactRepository.java`; `organisation/domain/OrganisationEntity.java`, `ContactEntity.java`; `db/changelog/db.changelog-master.yaml`; React pages under `frontend/src/pages/organisation/` and reusable forms under `frontend/src/components/organisation/`.
+- **Implementation example:** `OrganisationController.search()` passes filters and page parameters to `OrganisationService.search()`, which invokes the repository query and maps entities to `OrganisationSummary`; `OrganisationService.create()` applies the duplicate rule and derives `createdBy` from the authenticated principal.
+- **Query behavior:** Contact counts for a page are loaded with one grouped repository query and mapped in memory, avoiding one count query per listed record.
+- **Benefits:** Responsibilities remain in the established layers; entities and user security data do not leak through API responses; the service can enforce duplicate rules and transaction boundaries; page size and role access are bounded.
+- **Trade-offs:** The module uses explicit query predicates and role rules. A future more complex filter grammar, ownership model, lifecycle, or integrations may justify other patterns after requirements emerge.
+- **Tests:** `Block3OrganisationIntegrationTest` covers BDR authorization, non-BDR rejection, create/detail/update, search/pagination, normalized duplicates, creator traceability, and validation.
+- **Assumptions for review:** Shared BDR/admin access; free-text industry/company-size/lead-source; trimmed case-insensitive organisation-name deduplication; contact-email deduplication per organisation.
+
 ## Future entry template
 
 For every pattern newly selected, add a section with:
@@ -119,3 +134,18 @@ For every pattern newly selected, add a section with:
 - Tests demonstrating the problem/behavior is addressed.
 
 For a block with no new pattern, add a dated note naming the direct approach and why a pattern would add complexity without value.
+
+## Block 4 pattern decision
+
+### Service Layer, Repository, DTO, Dependency Injection, and MVC
+
+- **Category:** Architectural patterns and techniques
+- **Problem solved:** Keep prospecting HTTP contracts, persistence, business rules, and database models separate.
+- **Why selected:** Calls, ownership checks, follow-up lifecycle, and cross-entity validation require cohesive use-case logic and transactions. The existing modular-monolith layers already provide a consistent solution.
+- **Alternatives considered:** Business rules in controllers, direct repository use from React-facing controllers, or introducing a strategy/event framework. These either couple concerns or add abstractions without a current variability/consumer requirement.
+- **Classes/files:** `prospecting/api/*Controller.java`, `prospecting/service/ProspectingService.java`, `prospecting/repository/*Repository.java`, `prospecting/domain/*Entity.java`, and `prospecting/api/ProspectingDtos.java`.
+- **Actual example:** `ProspectingService.completeFollowUp()` appends a new `CallActivityEntity`, updates the lead's latest-call summary, marks the follow-up completed with the new call reference, and optionally creates another follow-up in one transaction.
+- **Benefits:** Call history is append-only, follow-up state is queryable, and ownership/organisation rules are enforced server-side.
+- **Trade-offs:** `ProspectingService` currently spans the four closely related prospecting entities. Split it only if upcoming review/assignment workflows create genuinely separate responsibilities.
+
+No Strategy, State, Factory, Observer, Specification, or event-bus pattern was added. The call outcome set and follow-up transition rules are currently fixed and small; simple enums and explicit service methods are clearer until requirements show real policy variation or event consumers.

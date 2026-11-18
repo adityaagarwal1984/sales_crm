@@ -27,6 +27,10 @@ export const roleLabels = {
 };
 
 const dashboardItem = { label: "Dashboard", icon: LayoutDashboard, available: true };
+const sharedDirectoryItems = [
+  { label: "Organisations", icon: Building2, href: "/organisations", available: true },
+  { label: "Contacts", icon: ContactRound, href: "/contacts", available: true },
+];
 
 export const roleNavigation = {
   ADMIN: {
@@ -34,6 +38,7 @@ export const roleNavigation = {
     greeting: "Good morning, Aditya",
     items: [
       dashboardItem,
+      ...sharedDirectoryItems,
       { label: "Users & roles", icon: Users, href: "/admin/users", available: true },
       { label: "Targets", icon: Target },
       { label: "System settings", icon: Settings2 },
@@ -44,10 +49,11 @@ export const roleNavigation = {
     greeting: "Good morning, Aditya",
     items: [
       dashboardItem,
-      { label: "Organisations", icon: Building2 },
-      { label: "Contacts", icon: ContactRound },
-      { label: "Calls & follow-ups", icon: Phone },
-      { label: "SQL submissions", icon: ClipboardCheck },
+      ...sharedDirectoryItems,
+      { label: "My leads", icon: Target, href: "/bdr/leads", available: true },
+      { label: "Calls", icon: Phone, href: "/bdr/calls", available: true },
+      { label: "Follow-ups", icon: CalendarDays, href: "/bdr/follow-ups", available: true },
+      { label: "SQL submissions", icon: ClipboardCheck, href: "/bdr/sql-submissions", available: true },
     ],
   },
   SALES_MANAGER: {
@@ -55,7 +61,8 @@ export const roleNavigation = {
     greeting: "Good morning, Priya",
     items: [
       dashboardItem,
-      { label: "SQL review", icon: ClipboardCheck },
+      ...sharedDirectoryItems,
+      { label: "SQL submissions", icon: ClipboardCheck, href: "/sales-manager/sql-review", available: true },
       { label: "AE assignments", icon: UserRoundCheck },
       { label: "Team performance", icon: BarChart3 },
       { label: "Revival queue", icon: Activity },
@@ -66,6 +73,7 @@ export const roleNavigation = {
     greeting: "Good morning, Rohan",
     items: [
       dashboardItem,
+      ...sharedDirectoryItems,
       { label: "Opportunities", icon: CircleDollarSign },
       { label: "Meetings", icon: CalendarDays },
       { label: "Stakeholders", icon: ContactRound },
@@ -77,6 +85,7 @@ export const roleNavigation = {
     greeting: "Good morning, Ananya",
     items: [
       dashboardItem,
+      ...sharedDirectoryItems,
       { label: "Performance", icon: Gauge },
       { label: "Revenue", icon: CircleDollarSign },
       { label: "Departments", icon: Users },

@@ -1,15 +1,18 @@
 # Business Workflows
 
-**Status: Draft outline from the role descriptions.** These flows are incomplete until the business states, actors, and handoff rules are confirmed.
+**Status: Partial implementation.** The BDR-owned lead, calling, follow-up, and SQL submission path is implemented. SQL qualification and manager review remain unconfirmed.
 
 ## 1. BDR discovery and submission
 
-1. BDR discovers an organisation and identifies contacts.
-2. BDR performs calls and schedules follow-ups.
-3. BDR submits an item called an SQL.
-4. SALES_MANAGER reviews it and may assign it to an AE.
+1. BDR discovers an organisation and adds its contacts.
+2. BDR creates a sales pursuit (lead) linked to an organisation and primary contact.
+3. Each call appends an immutable activity record; an optional next follow-up creates a separate pending record.
+4. Completing a follow-up appends another call and links it to the completed follow-up; optional next follow-up creates a new pending record.
+5. BDR submits a lead as an SQL, creating a separate record in `SUBMITTED` state.
+6. SALES_MANAGER receives the SQL submission with its lead, organisation, and primary contact context.
+7. SALES_MANAGER reviews and assigns it to an AE in the next workflow block.
 
-**Unknown:** qualification criteria, required evidence/fields, duplicate handling, rejection/rework path, review SLA, and whether assignment requires acceptance.
+**Unknown:** qualification criteria, required evidence/fields, duplicate handling, rejection/rework path, review SLA, assignment rules, and whether assignment requires AE acceptance. The SQL intake queue is implemented; review decisions and AE assignment are not. Leads and their activities are visible to their owning BDR; managers see linked lead context through submissions.
 
 ## 2. Manager review and assignment
 

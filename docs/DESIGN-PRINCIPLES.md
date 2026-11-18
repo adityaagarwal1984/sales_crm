@@ -35,6 +35,15 @@ These are improvement candidates, not a mandate to rewrite stable Block 1/2 code
 | **Low Coupling** | Minimize knowledge one component needs about another. | `DashboardPage` receives a role and consumes dashboard configuration; the shared shell does not know each row's business meaning. On the backend, `AdminUserController` directly knows repository count methods, which couples transport to persistence and should be reduced when dashboard reporting expands. | One module changing forces unrelated modules to change; controller tests requiring database internals. |
 | **Composition over Inheritance** | Assemble behavior from small collaborators/components unless a true subtype relationship exists. | React composes `AppShell` from `Sidebar`, `TopBar`, and routed pages. `UserEntity` composes a role association instead of subclassing by role. Continue composing forms from `FormField`, `Modal`, and button primitives. | Brittle base classes and role-specific branching embedded in shared UI. |
 
+## Block 3 application
+
+- **SRP / Separation of Concerns:** `OrganisationController` and `ContactController` translate HTTP requests; `OrganisationService` owns use-case orchestration and duplicate rules; repositories own persistence queries; React pages own screen state and reuse common form, search, page-header, and pagination components.
+- **DIP / Repository:** The service receives Spring Data repositories and the user repository through constructor injection, not through direct SQL or controller access.
+- **Encapsulation / DTO:** Organisation/contact JPA entities remain package-domain data. API records explicitly map fields, nested links, and creator labels; no entity is returned directly.
+- **KISS / DRY:** Current fixed filters are explicit query parameters and repository predicates. No generalized search-builder or per-field Specification framework was added.
+- **Low coupling / modular monolith:** New classes live under `organisation/`; the module depends on the identity repository only to associate the authenticated creator. Future pursuit workflows should reference organisation/contact IDs without merging contact and lead concepts.
+- **Trade-off:** Organisation profile mapping includes its contact list, and paged summaries include contact counts. If list volume grows, replace per-row count queries with a grouped projection.
+
 ## How to apply this guide
 
 For a new business capability, first state the rule and its owner. Put the rule in a cohesive service/domain operation, validate at the API boundary, persist via a repository, and keep the React page focused on interaction. Add a new abstraction only when there is a real second implementation, policy variation, external integration, or independently testable boundary.

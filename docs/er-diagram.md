@@ -1,12 +1,12 @@
-# Provisional ER Diagram
+# ER Diagram
 
-**Conceptual only.** This is a discussion aid, not a database schema. Dashed relationships and entity names are candidates. Cardinalities and lifecycle must be confirmed before migrations are designed.
+Identity, organisation, and contact tables are implemented through Liquibase. Later CRM workflow entities remain conceptual.
 
 ```mermaid
 erDiagram
+  ROLE ||--o{ USER : assigned_to
+  USER ||--o{ ORGANISATION : created
   USER ||--o{ TARGET : receives
-  ROLE }o--o{ USER : assigned_to
-  USER ||--o{ ACTIVITY : owns
   ORGANISATION ||--o{ CONTACT : has
   ORGANISATION ||--o{ SQL_SUBMISSION : referenced_by
   USER ||--o{ SQL_SUBMISSION : submits
@@ -37,21 +37,33 @@ erDiagram
   ORGANISATION {
     uuid id PK
     string name
-    string lifecycle
+    string website
+    string industry
+    string company_size
+    string location
+    string address
+    string lead_source
+    string description
+    uuid created_by FK
+    datetime created_at
+    datetime updated_at
   }
   CONTACT {
     uuid id PK
-    string name
+    uuid organisation_id FK
+    string full_name
     string email
-  }
-  ACTIVITY {
-    uuid id PK
-    string type
-    datetime occurred_at
-    datetime next_action_at
+    string phone
+    string designation
+    string department
+    string linkedin_url
+    datetime created_at
+    datetime updated_at
   }
   SQL_SUBMISSION {
     uuid id PK
+    uuid lead_id FK
+    uuid submitted_by FK
     string status
     datetime submitted_at
   }
@@ -78,10 +90,18 @@ erDiagram
   }
 ```
 
+## Implemented relationship and duplicate rules
+
+- One `app_user` created-by reference can be associated with many organisations; each organisation retains one creator.
+- One organisation has zero or more contacts; each contact belongs to exactly one organisation. The database foreign key prevents deleting an organisation while it still has contacts; no delete endpoint is exposed in this block.
+- Organisation name uniqueness is case-insensitive after trimming. The database index enforces this against concurrent requests.
+- Contact email is optional and unique within one organisation when supplied, case-insensitive after trimming. A person may be linked to another organisation with the same email.
+- A contact is a person record. It is not an SQL, lead, or opportunity.
+
 ## Important caveats
 
 - The SQL submission → opportunity conversion may be one-to-one, one-to-many, or not a separate record at all.
-- A contact may belong to multiple organisations; an activity may relate to several record types. These are unresolved.
-- Role assignment may be single-role, multi-role, or scoped by team. The drawing does not settle that question.
+- A contact belongs to one organisation in Block 3. Revisit only if the business requires a person-to-many-organisations relationship; activity relationships remain unresolved.
+- Role assignment is one role per user in the implemented identity module.
 - `lifecycle`, `status`, `stage`, `metric`, and `type` values are placeholders, not approved enums.
 - Use database-native UUIDs and types only after the agreed Java/PostgreSQL versions and conventions are chosen.

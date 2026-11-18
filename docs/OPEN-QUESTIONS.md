@@ -40,4 +40,6 @@ These questions are intentionally explicit: the supplied brief calls out purpose
 
 ## Answers / decision log
 
+- **Block 3 decisions (2026-11-19):** All roles can read the shared organisation/contact directory; BDR and ADMIN can create/edit; organisation creator is retained for traceability; industry/company-size/lead-source remain free text; organisation name is duplicate-checked after trim and case-folding; contact email is optional and duplicate-checked within one organisation only. See [ADR-0005](adr/ADR-0005-organisation-contact-boundary.md).
+
 The user supplied Block 2 requirements on 2026-11-18: local email/password login, JWT authentication, the five named roles, admin user management, inactive-account login rejection, and password-hash exclusion from API responses. The user confirmed the recommended defaults on 2026-11-18: 15-minute access JWT returned in the response and held in memory, no refresh token; one role per account; first admin provisioned from environment variables; administrator-set temporary password with mandatory change at first login.

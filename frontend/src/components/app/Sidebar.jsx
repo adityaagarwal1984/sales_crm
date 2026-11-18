@@ -39,7 +39,7 @@ export function Sidebar({ role, open = false, onClose }) {
             const Icon = item.icon;
             if (item.available) {
               const target = item.href || dashboardPath;
-              const active = location.pathname === target;
+              const active = location.pathname === target || (item.href && location.pathname.startsWith(`${target}/`));
               return (
                 <Link
                   key={item.label}

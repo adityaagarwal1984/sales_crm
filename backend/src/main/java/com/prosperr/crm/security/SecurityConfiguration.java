@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
@@ -28,7 +29,13 @@ public class SecurityConfiguration {
     @Bean SecurityFilterChain securityFilterChain(HttpSecurity http, JwtDecoder decoder, UserRepository users) throws Exception {
         http.csrf(c -> c.disable()).cors(c -> {}).sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(a -> a.requestMatchers("/api/v1/auth/login", "/actuator/health", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                .requestMatchers("/api/v1/admin/**").hasRole("ADMIN").requestMatchers("/api/**").authenticated().anyRequest().permitAll())
+                .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/api/v1/bdr/sql-submissions/**").hasAnyRole("BDR", "SALES_MANAGER")
+                .requestMatchers(HttpMethod.POST, "/api/v1/bdr/sql-submissions/**").hasRole("BDR")
+                .requestMatchers("/api/v1/bdr/**").hasRole("BDR")
+                .requestMatchers(HttpMethod.GET, "/api/v1/organisations/**", "/api/v1/contacts/**").hasAnyRole("ADMIN", "BDR", "SALES_MANAGER", "AE", "LEADERSHIP")
+                .requestMatchers("/api/v1/organisations/**", "/api/v1/contacts/**").hasAnyRole("ADMIN", "BDR")
+                .requestMatchers("/api/**").authenticated().anyRequest().permitAll())
             .exceptionHandling(e -> e.authenticationEntryPoint((request,response,exception) -> response.sendError(401)))
             .addFilterBefore(new JwtAuthenticationFilter(decoder, users), UsernamePasswordAuthenticationFilter.class);
         return http.build();

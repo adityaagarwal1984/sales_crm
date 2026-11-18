@@ -3,10 +3,14 @@ import { cleanup, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { AppRoutes } from "@/App.jsx";
 const auth = vi.hoisted(() => ({ user: null, login: vi.fn(), logout: vi.fn(), loading: false, changePassword: vi.fn() }));
+const apiMock = vi.hoisted(() => ({ get: vi.fn(() => Promise.resolve({ data: { content: [], totalElements: 0, totalPages: 0 } })), post: vi.fn(), put: vi.fn() }));
 vi.mock("@/auth/AuthContext", () => ({ useAuth: () => auth, AuthProvider: ({children}) => children }));
+vi.mock("@/lib/api", () => ({ api: apiMock }));
 afterEach(() => { cleanup(); auth.user = null; });
 describe("authentication routes", () => {
  it("redirects unauthenticated visitors to sign in", () => { render(<MemoryRouter initialEntries={["/admin"]}><AppRoutes/></MemoryRouter>); expect(screen.getByRole("heading",{name:"Sign in to Sales CRM"})).toBeInTheDocument(); });
  it("shows the email and password sign-in form", () => { render(<MemoryRouter initialEntries={["/login"]}><AppRoutes/></MemoryRouter>); expect(screen.getByLabelText("Work email")).toBeInTheDocument(); expect(screen.getByLabelText("Password")).toBeInTheDocument(); });
  it("redirects signed-in users with a temporary password to password change", () => { auth.user={id:"u1",role:"ADMIN",fullName:"Admin",mustChangePassword:true}; render(<MemoryRouter initialEntries={["/admin"]}><AppRoutes/></MemoryRouter>); expect(screen.getByRole("heading",{name:"Set a new password"})).toBeInTheDocument(); });
+ it("keeps the BDR sidebar on the organisations page", async () => { auth.user={id:"u2",role:"BDR",fullName:"BDR User",mustChangePassword:false}; render(<MemoryRouter initialEntries={["/organisations"]}><AppRoutes/></MemoryRouter>); expect(await screen.findByRole("heading",{name:"Organisations"})).toBeInTheDocument(); expect(await screen.findByText("No organisations yet")).toBeInTheDocument(); expect(screen.getByText("Current workspace").parentElement).toHaveTextContent("Business Development"); expect(screen.getByRole("link",{name:/Contacts/})).toHaveAttribute("href","/contacts"); expect(apiMock.get).toHaveBeenCalledWith("/organisations",expect.objectContaining({params:expect.objectContaining({page:0,size:10})})); });
+ it("keeps the BDR sidebar on the contacts page", async () => { auth.user={id:"u3",role:"BDR",fullName:"BDR User",mustChangePassword:false}; render(<MemoryRouter initialEntries={["/contacts"]}><AppRoutes/></MemoryRouter>); expect(await screen.findByRole("heading",{name:"Contacts"})).toBeInTheDocument(); expect(screen.getByText("Current workspace").parentElement).toHaveTextContent("Business Development"); expect(screen.getByRole("link",{name:/Organisations/})).toHaveAttribute("href","/organisations"); });
 });

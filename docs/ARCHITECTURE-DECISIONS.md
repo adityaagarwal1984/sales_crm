@@ -3,6 +3,8 @@
 **Review date:** 2026-11-19  
 **Scope:** Blocks 0–2 code and documentation in this repository. This review does not authorize Block 3 implementation.
 
+This was the point-in-time review produced before Block 3. Block 3 was subsequently requested and implemented; its module decisions are recorded in [ADR-0005](adr/ADR-0005-organisation-contact-boundary.md).
+
 ## Existing architecture
 
 The codebase is a separate React/Vite frontend and Spring Boot REST API backed by PostgreSQL and Liquibase. The backend is a single deployable application. Its current source is a small identity capability organized in layers under `com.prosperr.crm.identity`:

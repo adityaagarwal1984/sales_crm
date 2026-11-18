@@ -7,7 +7,7 @@
 | 0. Discovery and approval | Resolve the blocking questions; confirm definitions, roles, MVP, identity, deployment, and first workflow | Tech lead / manager approves scope and initial decisions |
 | 1. Foundation | Frontend UI foundation completed in this block; remaining backend foundation includes Spring Boot structure, PostgreSQL connection, Liquibase baseline, OpenAPI, and error/validation conventions | UI build and dashboard routes verified; backend foundation remains a separate approved sub-block |
 | 2. Identity and authorization | Implement JWT authentication, first-admin bootstrap, one-role accounts, and admin user management | Auth/permission edge-case tests pass; migrations and frontend flow verified against PostgreSQL before production handoff |
-| 3. Organisation/contact work | Searchable organisation and contact records, duplication rules, ownership/audit | Agreed BDR workflow and persistence tests |
+| 3. Organisation/contact work | Searchable organisation and contact records, duplicate rules, creator traceability | Tech-lead review of provisional access/duplicate defaults and persistence tests |
 | 4. Activities and SQL submission/review | Calls/follow-ups, qualification fields, review states, assignment | BDR-to-manager workflow accepted end-to-end |
 | 5. Opportunity execution | AE assignment, meetings, stakeholders, outcomes, Won handover | AE workflow and state transitions accepted |
 | 6. Revival | Inactive definition, revival assignments and outcomes | Revival workflow and reporting definition accepted |

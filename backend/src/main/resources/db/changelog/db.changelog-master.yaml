@@ -112,3 +112,247 @@ databaseChangeLog:
             columns:
               - column: { name: code, value: LEADERSHIP }
               - column: { name: display_name, value: Leadership }
+  - changeSet:
+      id: 002-create-organisation-contact-tables
+      author: prosperr
+      changes:
+        - createTable:
+            tableName: organisation
+            columns:
+              - column: { name: id, type: uuid, constraints: { primaryKey: true, nullable: false } }
+              - column: { name: name, type: varchar(180), constraints: { nullable: false } }
+              - column: { name: website, type: varchar(500) }
+              - column: { name: industry, type: varchar(120) }
+              - column: { name: company_size, type: varchar(80) }
+              - column: { name: location, type: varchar(180) }
+              - column: { name: address, type: varchar(10000) }
+              - column: { name: lead_source, type: varchar(120) }
+              - column: { name: description, type: varchar(10000) }
+              - column: { name: created_by, type: uuid, constraints: { nullable: false } }
+              - column: { name: created_at, type: timestamp with time zone, defaultValueComputed: CURRENT_TIMESTAMP, constraints: { nullable: false } }
+              - column: { name: updated_at, type: timestamp with time zone, defaultValueComputed: CURRENT_TIMESTAMP, constraints: { nullable: false } }
+              - column: { name: version, type: bigint, defaultValueNumeric: 0, constraints: { nullable: false } }
+        - addForeignKeyConstraint:
+            baseTableName: organisation
+            baseColumnNames: created_by
+            referencedTableName: app_user
+            referencedColumnNames: id
+            constraintName: fk_organisation_created_by
+        - sql:
+            sql: CREATE UNIQUE INDEX uq_organisation_name_normalized ON organisation (lower(btrim(name)));
+            dbms: postgresql
+        - createTable:
+            tableName: contact
+            columns:
+              - column: { name: id, type: uuid, constraints: { primaryKey: true, nullable: false } }
+              - column: { name: organisation_id, type: uuid, constraints: { nullable: false } }
+              - column: { name: name, type: varchar(180), constraints: { nullable: false } }
+              - column: { name: email, type: varchar(320) }
+              - column: { name: phone, type: varchar(40) }
+              - column: { name: designation, type: varchar(120) }
+              - column: { name: department, type: varchar(120) }
+              - column: { name: linkedin_url, type: varchar(500) }
+              - column: { name: created_at, type: timestamp with time zone, defaultValueComputed: CURRENT_TIMESTAMP, constraints: { nullable: false } }
+              - column: { name: updated_at, type: timestamp with time zone, defaultValueComputed: CURRENT_TIMESTAMP, constraints: { nullable: false } }
+              - column: { name: version, type: bigint, defaultValueNumeric: 0, constraints: { nullable: false } }
+        - addForeignKeyConstraint:
+            baseTableName: contact
+            baseColumnNames: organisation_id
+            referencedTableName: organisation
+            referencedColumnNames: id
+            constraintName: fk_contact_organisation
+        - createIndex:
+            tableName: contact
+            indexName: ix_contact_organisation
+            columns:
+              - column: { name: organisation_id }
+        - sql:
+            sql: CREATE UNIQUE INDEX uq_contact_org_email_normalized ON contact (organisation_id, lower(btrim(email))) WHERE email IS NOT NULL AND btrim(email) <> '';
+            dbms: postgresql
+  - changeSet:
+      id: 003-create-bdr-prospecting-tables
+      author: prosperr
+      changes:
+        - addColumn:
+            tableName: contact
+            columns:
+              - column: { name: created_by, type: uuid }
+        - sql:
+            sql: UPDATE contact c SET created_by = o.created_by FROM organisation o WHERE c.organisation_id = o.id AND c.created_by IS NULL;
+            dbms: postgresql
+        - addNotNullConstraint:
+            tableName: contact
+            columnName: created_by
+            columnDataType: uuid
+        - addForeignKeyConstraint:
+            baseTableName: contact
+            baseColumnNames: created_by
+            referencedTableName: app_user
+            referencedColumnNames: id
+            constraintName: fk_contact_created_by
+        - createTable:
+            tableName: sales_lead
+            columns:
+              - column: { name: id, type: uuid, constraints: { primaryKey: true, nullable: false } }
+              - column: { name: title, type: varchar(180), constraints: { nullable: false } }
+              - column: { name: description, type: varchar(10000) }
+              - column: { name: organisation_id, type: uuid, constraints: { nullable: false } }
+              - column: { name: primary_contact_id, type: uuid, constraints: { nullable: false } }
+              - column: { name: owner_id, type: uuid, constraints: { nullable: false } }
+              - column: { name: created_by, type: uuid, constraints: { nullable: false } }
+              - column: { name: last_call_outcome, type: varchar(32) }
+              - column: { name: last_call_at, type: timestamp with time zone }
+              - column: { name: created_at, type: timestamp with time zone, defaultValueComputed: CURRENT_TIMESTAMP, constraints: { nullable: false } }
+              - column: { name: updated_at, type: timestamp with time zone, defaultValueComputed: CURRENT_TIMESTAMP, constraints: { nullable: false } }
+              - column: { name: version, type: bigint, defaultValueNumeric: 0, constraints: { nullable: false } }
+        - addForeignKeyConstraint:
+            baseTableName: sales_lead
+            baseColumnNames: organisation_id
+            referencedTableName: organisation
+            referencedColumnNames: id
+            constraintName: fk_sales_lead_organisation
+        - addForeignKeyConstraint:
+            baseTableName: sales_lead
+            baseColumnNames: primary_contact_id
+            referencedTableName: contact
+            referencedColumnNames: id
+            constraintName: fk_sales_lead_primary_contact
+        - addForeignKeyConstraint:
+            baseTableName: sales_lead
+            baseColumnNames: owner_id
+            referencedTableName: app_user
+            referencedColumnNames: id
+            constraintName: fk_sales_lead_owner
+        - addForeignKeyConstraint:
+            baseTableName: sales_lead
+            baseColumnNames: created_by
+            referencedTableName: app_user
+            referencedColumnNames: id
+            constraintName: fk_sales_lead_created_by
+        - createIndex:
+            tableName: sales_lead
+            indexName: ix_sales_lead_owner_created
+            columns:
+              - column: { name: owner_id }
+              - column: { name: created_at }
+        - createTable:
+            tableName: call_activity
+            columns:
+              - column: { name: id, type: uuid, constraints: { primaryKey: true, nullable: false } }
+              - column: { name: lead_id, type: uuid, constraints: { nullable: false } }
+              - column: { name: contact_id, type: uuid, constraints: { nullable: false } }
+              - column: { name: created_by, type: uuid, constraints: { nullable: false } }
+              - column: { name: called_at, type: timestamp with time zone, constraints: { nullable: false } }
+              - column: { name: outcome, type: varchar(32), constraints: { nullable: false } }
+              - column: { name: notes, type: varchar(10000) }
+              - column: { name: next_follow_up_at, type: timestamp with time zone }
+              - column: { name: created_at, type: timestamp with time zone, defaultValueComputed: CURRENT_TIMESTAMP, constraints: { nullable: false } }
+        - addForeignKeyConstraint:
+            baseTableName: call_activity
+            baseColumnNames: lead_id
+            referencedTableName: sales_lead
+            referencedColumnNames: id
+            constraintName: fk_call_activity_lead
+        - addForeignKeyConstraint:
+            baseTableName: call_activity
+            baseColumnNames: contact_id
+            referencedTableName: contact
+            referencedColumnNames: id
+            constraintName: fk_call_activity_contact
+        - addForeignKeyConstraint:
+            baseTableName: call_activity
+            baseColumnNames: created_by
+            referencedTableName: app_user
+            referencedColumnNames: id
+            constraintName: fk_call_activity_created_by
+        - createIndex:
+            tableName: call_activity
+            indexName: ix_call_activity_lead_called
+            columns:
+              - column: { name: lead_id }
+              - column: { name: called_at }
+        - createTable:
+            tableName: follow_up
+            columns:
+              - column: { name: id, type: uuid, constraints: { primaryKey: true, nullable: false } }
+              - column: { name: lead_id, type: uuid, constraints: { nullable: false } }
+              - column: { name: contact_id, type: uuid, constraints: { nullable: false } }
+              - column: { name: source_call_id, type: uuid, constraints: { nullable: false, unique: true, uniqueConstraintName: uq_follow_up_source_call } }
+              - column: { name: owner_id, type: uuid, constraints: { nullable: false } }
+              - column: { name: created_by, type: uuid, constraints: { nullable: false } }
+              - column: { name: due_at, type: timestamp with time zone, constraints: { nullable: false } }
+              - column: { name: status, type: varchar(20), defaultValue: PENDING, constraints: { nullable: false } }
+              - column: { name: completed_at, type: timestamp with time zone }
+              - column: { name: completed_call_id, type: uuid, constraints: { unique: true, uniqueConstraintName: uq_follow_up_completed_call } }
+              - column: { name: created_at, type: timestamp with time zone, defaultValueComputed: CURRENT_TIMESTAMP, constraints: { nullable: false } }
+              - column: { name: updated_at, type: timestamp with time zone, defaultValueComputed: CURRENT_TIMESTAMP, constraints: { nullable: false } }
+              - column: { name: version, type: bigint, defaultValueNumeric: 0, constraints: { nullable: false } }
+        - addForeignKeyConstraint:
+            baseTableName: follow_up
+            baseColumnNames: lead_id
+            referencedTableName: sales_lead
+            referencedColumnNames: id
+            constraintName: fk_follow_up_lead
+        - addForeignKeyConstraint:
+            baseTableName: follow_up
+            baseColumnNames: contact_id
+            referencedTableName: contact
+            referencedColumnNames: id
+            constraintName: fk_follow_up_contact
+        - addForeignKeyConstraint:
+            baseTableName: follow_up
+            baseColumnNames: source_call_id
+            referencedTableName: call_activity
+            referencedColumnNames: id
+            constraintName: fk_follow_up_source_call
+        - addForeignKeyConstraint:
+            baseTableName: follow_up
+            baseColumnNames: owner_id
+            referencedTableName: app_user
+            referencedColumnNames: id
+            constraintName: fk_follow_up_owner
+        - addForeignKeyConstraint:
+            baseTableName: follow_up
+            baseColumnNames: created_by
+            referencedTableName: app_user
+            referencedColumnNames: id
+            constraintName: fk_follow_up_created_by
+        - addForeignKeyConstraint:
+            baseTableName: follow_up
+            baseColumnNames: completed_call_id
+            referencedTableName: call_activity
+            referencedColumnNames: id
+            constraintName: fk_follow_up_completed_call
+        - createIndex:
+            tableName: follow_up
+            indexName: ix_follow_up_owner_status_due
+            columns:
+              - column: { name: owner_id }
+              - column: { name: status }
+              - column: { name: due_at }
+        - createTable:
+            tableName: sql_submission
+            columns:
+              - column: { name: id, type: uuid, constraints: { primaryKey: true, nullable: false } }
+              - column: { name: lead_id, type: uuid, constraints: { nullable: false } }
+              - column: { name: submitted_by, type: uuid, constraints: { nullable: false } }
+              - column: { name: submitted_at, type: timestamp with time zone, defaultValueComputed: CURRENT_TIMESTAMP, constraints: { nullable: false } }
+              - column: { name: status, type: varchar(20), defaultValue: SUBMITTED, constraints: { nullable: false } }
+        - addForeignKeyConstraint:
+            baseTableName: sql_submission
+            baseColumnNames: lead_id
+            referencedTableName: sales_lead
+            referencedColumnNames: id
+            constraintName: fk_sql_submission_lead
+        - addForeignKeyConstraint:
+            baseTableName: sql_submission
+            baseColumnNames: submitted_by
+            referencedTableName: app_user
+            referencedColumnNames: id
+            constraintName: fk_sql_submission_user
+        - createIndex:
+            tableName: sql_submission
+            indexName: ix_sql_submission_user_date
+            columns:
+              - column: { name: submitted_by }
+              - column: { name: submitted_at }

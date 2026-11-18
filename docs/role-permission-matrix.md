@@ -1,15 +1,14 @@
 # Role and Permission Matrix
 
-**Status: Draft capability map from the supplied brief.** This is not a final authorization policy. A checkmark means the role is described as responsible for the capability; it does not grant unrestricted access to every record.
+**Status: Mixed confirmed and draft capability map.** Shared organisation/contact access is confirmed; the remaining rows describe responsibilities and do not grant unrestricted record access.
 
 | Capability | ADMIN | BDR | SALES_MANAGER | AE | LEADERSHIP |
 |---|:---:|:---:|:---:|:---:|:---:|
 | User creation / role management | ✓ | — | — | — | — |
 | Targets and system configuration | ✓ | — | — | — | — |
-| Organisation discovery | — | ✓ | — | — | — |
-| Contact mining | — | ✓ | — | — | — |
+| Read shared organisations and contacts | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Create/edit organisations and contacts | ✓ | ✓ | — | — | — |
 | Calling and follow-ups | — | ✓ | — | — | — |
-| SQL submission | — | ✓ | Review only? | — | — |
 | SQL review | — | — | ✓ | — | — |
 | AE assignment | — | — | ✓ | — | — |
 | Team performance | — | — | ✓ | — | — |
@@ -24,7 +23,7 @@
 
 - Does ADMIN see and change all business records, or only configuration and identities?
 - Does SALES_MANAGER see the whole organization, a team, or assigned records? Can managers edit or only review?
-- Can BDRs see their own submissions after assignment? Can they edit/resubmit rejected submissions?
+- Can BDRs see their submissions after AE assignment? Can they edit/resubmit rejected submissions?
 - Can AEs see only assigned opportunities, or also shared accounts and prior history?
 - Does LEADERSHIP have read-only access? Are revenue and person-level metrics restricted?
 - Can users have more than one role? How are permissions scoped across teams/departments?
