@@ -22,6 +22,7 @@ import { AeOpportunitiesPage } from "@/pages/ae/AeOpportunitiesPage";
 import { AeDashboardPage } from "@/pages/ae/AeDashboardPage";
 import { AeOpportunityDetailPage } from "@/pages/ae/AeOpportunityDetailPage";
 import { LeadershipDashboardPage } from "@/pages/leadership/LeadershipDashboardPage";
+import { LandingPage } from "@/pages/LandingPage";
 
 function Guard({children}) { const {user,loading}=useAuth(); const location=useLocation(); if(loading)return null; if(!user)return <Navigate to="/login" replace state={{from:location.pathname}}/>; if(user.mustChangePassword&&location.pathname!=="/change-password")return <Navigate to="/change-password" replace/>; const wanted=Object.entries(roleNavigation).find(([,v])=>location.pathname===`/${v.dashboard}`)?.[0]; if(wanted&&wanted!==user.role)return <Navigate to={`/${roleNavigation[user.role]?.dashboard||"admin"}`} replace/>; if(location.pathname.startsWith("/admin")&&user.role!=="ADMIN")return <Navigate to={`/${roleNavigation[user.role]?.dashboard||"admin"}`} replace/>; return children; }
 function BdrOnly({children}) { const {user}=useAuth(); return user?.role==="BDR"?children:<Navigate to={`/${roleNavigation[user?.role]?.dashboard||"admin"}`} replace/>; }
@@ -34,7 +35,7 @@ export function AppRoutes() {
     <Routes>
       <Route path="/login" element={<LoginPage/>}/>
       <Route path="/change-password" element={<Guard><ChangePasswordPage/></Guard>}/>
-      <Route path="/" element={<Navigate to="/admin" replace />} />
+      <Route path="/" element={<LandingPage/>} />
       <Route element={<Guard><AppShell /></Guard>}>
         {roleOrder.map((role) => (
           role === "LEADERSHIP" ? <Route key={role} path="/leadership/*" element={<LeadershipOnly><LeadershipDashboardPage/></LeadershipOnly>} /> :

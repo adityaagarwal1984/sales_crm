@@ -1,42 +1,39 @@
-# Design Pattern Strategy
+# Pattern choices
 
-Patterns are tools for recurring design problems, not required ingredients. This matrix distinguishes patterns present in the inspected code from patterns that may help only after a real business or integration need appears.
+Patterns are tools for recurring problems, not a checklist. These are the patterns actually used or intentionally rejected in the current CRM.
 
-## Selection matrix
-
-| Pattern | Category | Current status | CRM recommendation and trigger |
+| Pattern / technique | Category | Current use | Why it fits / trade-off |
 |---|---|---|---|
-| Factory Method | Creational | Not used | Defer. Add only if the same domain object must be created through multiple validated workflows or providers. Ordinary constructors and Spring configuration are sufficient now. |
-| Builder | Creational | Library use only | Nimbus `JwtClaimsSet.builder()` assembles token claims. Do not create project-specific builders for simple request records or entities. Consider one only for a complex immutable query/report or object with many optional parts. |
-| Singleton | Creational | Spring-managed scope | `@Service`/`@Repository` beans are singleton-scoped by default. Keep them stateless and use Spring lifecycle; do not write a manual singleton or store request/user state in a bean. |
-| Adapter | Structural | Not used | Likely future seam for email, calendar, calling, lead-source, or implementation-system integrations. Add when a real provider/API is selected; keep its external payloads out of domain services. |
-| Decorator | Structural | No app-owned decorator | Defer. Add around a stable contract only for a real cross-cutting capability such as metrics/retry/caching that can be independently composed. Axios interceptors are HTTP middleware, not evidence for a custom Decorator hierarchy. |
-| Facade | Structural | Not used | Defer. Service methods already give controllers a use-case boundary. Add a facade only if a workflow coordinates multiple services and otherwise exposes too much orchestration detail. |
-| Strategy | Behavioural | Not used | Candidate for qualification, assignment, revival eligibility, or commission policy only if the business confirms multiple interchangeable rule sets. Start with a direct service method while there is one rule. |
-| Observer | Behavioural | Framework-managed UI state only | React Context updates `useAuth()` consumers when auth state changes. No domain observer/event bus exists. Use domain events only when several independent reactions need to follow a committed business event. |
-| State | Behavioural | Not used | Do not introduce yet; no workflow entities exist. For SQL/opportunity lifecycle, begin with an enum plus explicit transition validation. Use State objects only if state-specific behavior becomes materially complex. |
-| Template Method | Behavioural | Not used | No family of algorithms shares fixed steps with variable hooks. Reassess only if repeated import/report pipelines emerge with a common invariant sequence. |
-| Chain of Responsibility | Behavioural | Framework pipeline used | `SecurityConfiguration` registers `JwtAuthenticationFilter` in Spring Security's filter chain. Keep filters focused on HTTP authentication concerns; do not create a second generic handler chain for business rules. |
-| Specification | Behavioural | Capability present, not used | `UserRepository` extends `JpaSpecificationExecutor`, but there are no `Specification<UserEntity>` objects. Remove the unused extension until approved dynamic filters justify it. For a few fixed filters, prefer explicit repository methods. |
-| MVC | Architectural | Implemented | Spring Web controllers map HTTP requests to DTOs and services. React supplies browser views. Keep API controllers thin and use the backend—not the React route guard—for access control. |
-| Repository | Architectural | Implemented | Spring Data `UserRepository` and `RoleRepository` provide persistence operations. Keep query concerns there; don't add repository interfaces around every utility. |
-| Service Layer | Architectural | Implemented | `AuthService` and `AdminUserService` contain use-case orchestration and transactions. Put business rules here/domain operations, not in controllers or React components. |
-| DTO | Architectural | Implemented | Request/response records carry API data separately from JPA entities. Keep credentials and hashes out of response DTOs. Some records currently live inside controllers/services; move them to a feature API package as contracts grow. |
-| Dependency Injection | Architectural | Implemented | Spring constructor injection supplies repositories, encoders, and JWT services. Prefer constructor injection and avoid service locator/static access. |
-| Modular Monolith | Architectural | Implemented and required | One Spring Boot deployment with packages grouped by capability; React remains a separate frontend application. Preserve module seams and do not introduce microservices for upcoming blocks. |
-| Domain Events | Architectural technique | Not used | Defer. Consider after a confirmed workflow event has multiple independent consumers or asynchronous side effects. If delivery must survive process failure, use an outbox rather than relying on in-memory publication alone. |
+| MVC / REST | Architecture | Spring controllers expose `/api/v1` resources and actions; services own rules. | Clear React/backend contract. DTO mapping and API versioning need maintenance. |
+| Service Layer | Architecture | Feature services coordinate validation, authorization, transactions, and persistence. | Keeps rules out of controllers; cohesive services can grow too large if capability boundaries blur. |
+| Repository | Architecture | Spring Data JPA repositories; explicit SQL for analytics aggregates. | Isolates persistence; ORM is less suitable for some reporting queries. |
+| DTO | Architecture technique | Request/response records separate APIs from entities. | Controls validation and prevents password hash/entity leakage; requires mapping. |
+| Dependency Injection | Creational technique | Spring constructor-injects collaborators. | Explicit dependencies and test seams; no need for one interface per class. |
+| Modular monolith | Architecture | One deployable app with identity, organisation, prospecting, sales, analytics packages. | Local transactions and simple operations; module boundaries need discipline as team/scale grows. |
+| Chain of Responsibility | Behavioral/framework | Spring Security filter chain includes `JwtAuthenticationFilter`. | Uses established authentication pipeline; filter ordering must be understood. |
+| Builder | Creational/library usage | Nimbus `JwtClaimsSet.builder()` creates JWT claims. | Clear named claim construction; library usage, not a custom builder framework. |
+| Append-only history | Data/audit technique | Qualification, assignment, stage, closure and reopen actions create history records. | Preserves actor/time/reason; increases storage and requires consistent transactional writes. |
+| Read-model aggregation | Query technique | Leadership service uses SQL aggregates and separate counts. | Efficient dashboard queries and avoids join fan-out; formulas must remain documented. |
 
-## Pattern selection rules for upcoming blocks
+## Pattern candidates evaluated
 
-1. State the concrete problem and the simpler direct implementation first.
-2. Confirm that the problem is recurring or has genuine variants before selecting a pattern.
-3. Keep pattern scope inside the owning module; don't add a global framework prematurely.
-4. Record the chosen pattern, alternatives, touched files, example, benefits, and trade-offs in [the implementation log](PATTERN-IMPLEMENTATION-LOG.md).
-5. If no pattern is needed, record “no pattern; direct approach selected” and why.
+| Pattern | Decision | Add it when… |
+|---|---|---|
+| Factory Method | Not used | There are multiple creation flows selected by type/provider. One current workflow does not justify a factory. |
+| Project-specific Builder | Not used | Construction has many optional fields/invariants; simple DTO/entity construction is adequate. |
+| Manual Singleton | Not used | Spring already manages stateless service bean lifecycle. Never put request state in singleton beans. |
+| Adapter | Not used | A real telephony, email, calendar, or external CRM provider is selected and needs a stable boundary. |
+| Decorator | Not used | Cross-cutting behavior needs composition around multiple implementations; current filters/interceptors suffice. |
+| Facade | Not used | A stable simplified API is needed over a genuinely complex subsystem. |
+| Strategy | Not used | Qualification, assignment, or scoring has multiple interchangeable approved policies. |
+| Observer / Domain Events | Not used | Multiple independent consumers need a committed domain event; current notifications are transactional direct writes. |
+| State | No state classes | Current SQL and opportunity lifecycles have small explicit enums/transitions. Add state objects only if behavior becomes substantially state-specific. |
+| Template Method | Not used | Several workflows share a stable algorithm with deliberate variable steps. |
+| Specification | Not used for CRM policy | Current list filters are fixed and explicit. Use composable specifications only if filter combinations grow. |
+| Domain Events / outbox | Not used | Asynchronous or cross-service delivery requires reliable post-commit publication. Current single-app workflows are synchronous. |
 
-## Review notes
+### How to explain the choice
 
-- The current application is intentionally small. Direct constructor injection, feature services, JPA repositories, and explicit role checks are adequate.
-- The presence of `JpaSpecificationExecutor` alone does not mean Specification is implemented. It is currently unused capability and should not be expanded without approved search/filter requirements.
-- The React role configuration is data-driven but is not a full Strategy or plugin system.
-- Do not turn the supplied business statuses into State-pattern classes until actual transition rules and variation justify that extra type structure.
+“I selected the smallest pattern that addresses a current requirement. The CRM uses standard MVC, services, repositories, DTOs, dependency injection, and a modular monolith. It uses explicit enum transition checks instead of a State class hierarchy because the current workflow is small. I would introduce Strategy or an Adapter when multiple real policies/providers exist.”
+
+See [Pattern Implementation Log](PATTERN-IMPLEMENTATION-LOG.md) for feature-specific examples and [ADRs](adr/) for decisions/trade-offs.

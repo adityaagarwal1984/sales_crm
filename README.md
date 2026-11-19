@@ -1,35 +1,29 @@
 # Prosperr Sales CRM
 
-An in-house sales CRM for Prosperr. Blocks 0–6 and 8 are implemented: project documentation, React UI foundation, Spring Boot identity/authentication, administrator user management, organisation/contact management, BDR prospecting and SQL qualification, Sales Manager assignment/performance, AE opportunity lifecycle, and Leadership analytics. Block 7 revival and target management remain pending.
+A role-based sales CRM that connects organisation discovery, BDR outreach, SQL review, AE opportunity management, and leadership analytics.
 
-## Repository layout
+## At a glance
 
-- [`docs/`](docs/README.md) — business, architecture, quality standards, APIs, and delivery documentation.
-- [`frontend/`](frontend/README.md) — React, Vite, and JavaScript application.
-- [`backend/`](backend/README.md) — Spring Boot modular monolith and local PostgreSQL setup.
+- **Frontend:** React 19, Vite, React Router, Tailwind CSS, Axios, Recharts, Lucide.
+- **Backend:** Java 21, Spring Boot 3.5, Spring Security, JPA, Jakarta Validation, OpenAPI.
+- **Database:** PostgreSQL with Liquibase-managed schema changes.
+- **Architecture:** Separate React SPA + one Spring Boot modular monolith. The backend is authoritative for roles, ownership, workflow rules, and persistence.
+- **Roles:** ADMIN, BDR, SALES_MANAGER, AE, LEADERSHIP.
+- **Status:** Blocks 0–6 and 8 implemented; Block 7 revival and target management remain unimplemented.
 
-## Current status
+## Start here
 
-See [Development Status](docs/DEVELOPMENT-STATUS.md), [Open Questions](docs/OPEN-QUESTIONS.md), and the [Development Plan](docs/development-plan.md). Block 2.5 documented architecture and engineering-principles guidance applied in Block 3.
+- [Interview and technical guide](docs/INTERVIEW-GUIDE.md) — architecture, API, schema, PostgreSQL rationale, patterns, algorithms, trade-offs, and interview answers.
+- [API reference](docs/api-documentation.md) · [Database notes](docs/database-design.md) · [ER diagram](docs/er-diagram.md)
+- [Design principles](docs/DESIGN-PRINCIPLES.md) · [Design patterns](docs/DESIGN-PATTERNS.md) · [ADR index](docs/ARCHITECTURE-DECISIONS.md)
+- [Current status](docs/DEVELOPMENT-STATUS.md) · [Open questions](docs/OPEN-QUESTIONS.md) · [All docs](docs/README.md)
 
-## Stack
+## Run locally
 
-React, Vite, JavaScript, Tailwind CSS, shadcn/ui, React Router, Axios, Recharts, Lucide React; Java 21, Spring Boot 3.5.16, Spring Security, Spring Data JPA, Hibernate, JWT, BCrypt, Jakarta Validation; PostgreSQL, Liquibase, OpenAPI; JUnit, Mockito, and Spring Boot Test.
+The public overview is `/`; employee sign-in is `/login` and uses the existing backend login API.
 
-Local versions are recorded in [System Architecture](docs/system-architecture.md); confirm company standards before deployment.
+1. Follow [backend setup](backend/README.md) to configure PostgreSQL and start Spring Boot.
+2. In `frontend/`, run `npm install` once, then `npm run dev`.
+3. Verify changes with `npm run build` and `npm test` in `frontend/`; run `mvn -Dmaven.repo.local=/Users/adityaagarwal/.local/m2 test` in `backend/`.
 
-## Local frontend development
-
-Use Node.js 24 LTS. From `frontend/`, run `npm run dev`; run `npm run build` and `npm test` before reviewing changes. Run the backend and PostgreSQL using [`backend/README.md`](backend/README.md). Changeset 006 applies the AE lifecycle schema on backend startup. Block 7 revival and target management remain unimplemented. Do not add credentials to the repository.
-
-## Documentation
-
-Start at [`docs/README.md`](docs/README.md). The Block 2.5 deliverables are:
-
-- [Design Principles](docs/DESIGN-PRINCIPLES.md)
-- [Design Patterns](docs/DESIGN-PATTERNS.md)
-- [Architecture Decisions and Review](docs/ARCHITECTURE-DECISIONS.md)
-- [Code Quality Standards](docs/CODE-QUALITY-STANDARDS.md)
-- [Pattern Implementation Log](docs/PATTERN-IMPLEMENTATION-LOG.md)
-
-Business rules that remain unresolved are tracked in [`docs/OPEN-QUESTIONS.md`](docs/OPEN-QUESTIONS.md).
+Never commit `.env` files, credentials, or signing secrets. Confirm Prosperr’s production versions, currency, identity, and deployment standards before a production rollout.

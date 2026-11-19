@@ -1,75 +1,27 @@
-# Development Status
+# Development status
 
-**Last updated:** 2026-11-19
+**Updated:** 2026-11-19
 
-## Current phase
+## Scope
 
-Blocks 0–6 and 8 are implemented. Block 2.5 architecture review and engineering guidelines are documented. Block 7 (customer revival) and target management remain unimplemented. Sales Managers have organization-wide BDR/AE access; Leadership analytics use real database aggregates.
+- Implemented: Blocks 0–6 and 8, including React foundation, identity/admin, shared organisation/contact directory, BDR prospecting and SQL qualification, Sales Manager review/assignment, AE opportunity lifecycle, and Leadership analytics.
+- Not implemented: Block 7 customer revival and target management.
+- Architecture: separate React SPA and Spring Boot modular monolith; PostgreSQL schema managed by Liquibase.
 
-## Completed
+## Important current rules
 
-- Inspected the workspace; it contained no repository or project files.
-- Created the requested `docs/`, `frontend/`, and `backend/` structure and root project entry point.
-- Recorded supplied role capabilities and technology stack as draft requirements.
-- Added provisional architecture, conceptual ER diagram, role-permission matrix, API outline, workflow outlines, edge-case list, test strategy, and deployment outline.
-- Captured unresolved business/technical decisions and a proposed sequential roadmap.
-- Created the React/Vite frontend with Tailwind CSS 4, shadcn-style source-owned UI components, React Router, Lucide, Recharts, and Axios dependencies.
-- Added the shared responsive CRM shell, role-specific navigation, and illustrative placeholder dashboards for all five roles.
-- Added shared CRM components, preview-only dashboard search/filter/pagination, design-system documentation, and route navigation tests.
-- Installed Node.js 24 LTS for local frontend development.
-- Added a Java 21 / Spring Boot 3.5.16 / Maven backend build foundation and environment-based PostgreSQL configuration.
-- Implemented PostgreSQL/Liquibase roles and users, BCrypt login, 15-minute JWTs, active-user checks per request, first-admin bootstrap, forced password changes, admin user CRUD/status/reset endpoints, and React auth routes/admin screens.
-- Connected frontend authentication to the API; removed the demo role switcher and gated role-specific dashboards by signed-in role.
-- Implemented Block 3 organisation/contact entities, repositories, DTOs, services, REST APIs, Liquibase migration, duplicate constraints, paginated search/filtering, and BDR/ADMIN server authorization.
-- Implemented Block 4 lead and calling workflows with BDR ownership, dashboard metrics, immutable call history, and follow-up scheduling/rescheduling/completion. The initial minimal SQL submission endpoint was superseded by the qualification flow below.
-- Connected BDR dashboard, leads, lead call history, calls, follow-ups, and SQL qualification screens to the backend. BDR navigation now opens these live screens.
-- Made organisations and contacts readable across all CRM roles while keeping create/edit access with BDR and ADMIN. Sales Managers receive all BDR submitted qualifications with linked lead and primary-contact context.
-- Implemented SQL qualification drafts, submission, manager approval/rejection, rejection feedback, resubmission, and append-only qualification history.
-- Retained optional manager links in admin user management, while Sales Manager data access applies across all BDR and AE accounts regardless of link.
-- Implemented approved-SQL assignment and active-opportunity reassignment to any active AE. Assignment history is append-only, and assigned AEs receive in-app notifications.
-- Added AE opportunity list, completed-meeting logging, and Won/Lost outcomes so manager performance metrics are backed by real activity records.
-- Added Sales Manager dashboard cards, team performance tables, approved SQL assignment queue, opportunity assignment history, and live notification dropdown.
-- Implemented the AE opportunity lifecycle: L1/L2/L3 stages, completed meeting records and participants, stakeholder roles, follow-ups, stage history, Won/Lost closure records, implementation handover, and manager-approved reopening.
-- Implemented the Leadership analytics API and dashboard with date/period, department, employee, and stage filters; organization overview, BDR/manager/AE metrics, funnel, and revenue views.
-- Split Leadership sidebar analytics into focused overview, individual performance, department summaries, sales funnel, and revenue views; shared filters remain available across these views.
-- Updated AE navigation so Meetings, Stakeholders, and Handovers open focused opportunity lists; opportunity cards now expose L1/L2/L3 progression, with an inline reason field for skipping L2.
-- Applied Prosperr's current deep-green/mint palette through shared theme tokens and added the local Prosperr mark before the brand name in the persistent sidebar used by every dashboard.
-- Added Liquibase changeset 003 for BDR prospecting tables and contact creator attribution; updated API and ER documentation plus ADR-0006.
-- Added organisation and contact listing/detail pages, create/edit forms, organisation profile contact section, search, and pagination; records load from the backend API.
-- Updated the ER diagram, API documentation, implementation log, architecture decision record, and current development status. Recorded shared-access and duplicate rules as provisional assumptions for tech-lead confirmation.
+- Organisations/contacts are shared directory records; BDR leads are owned pursuits.
+- SQLs are separately qualified/reviewed; only approved SQLs can become AE opportunities.
+- Sales Managers can access all BDR and AE accounts; AEs can manage only assigned opportunities.
+- Opportunity progression is L1 → L2 → L3 → Won/Lost; skip requires a reason, reopening requires manager approval.
+- Leadership dashboards use database aggregates. Revenue is final Won value; SQL conversion is approved ÷ submitted; assignment time is approval to first assignment.
 
-## Open / blocked on decisions
+## Local verification recorded in project history
 
-- Detailed SQL acceptance criteria and any currency convention for estimated deal value.
-- Customer-account lifecycle and expiry rules; detailed SQL acceptance criteria and official currency convention.
-- MVP boundary and acceptance criteria for business features.
-- Production database/service configuration and access-control review.
-- Data model, status transitions, reporting definitions, and deployment constraints.
-- Prosperr brand guidance and approved dashboard metrics/currency.
+The latest documented run reports backend Maven tests and frontend Vitest/build passing. Backend integration tests use H2 in PostgreSQL compatibility mode; this does not replace migration/query verification on local PostgreSQL. The frontend build reports a bundle-size advisory. See the [Interview Guide](INTERVIEW-GUIDE.md) for testing boundaries and implementation explanation.
 
-See [Open Questions](OPEN-QUESTIONS.md).
+These are recorded project results, not a verification performed during this documentation update.
 
-## Current runtime verification
+## Remaining decisions
 
-Block 2 implementation is running locally against the installed PostgreSQL 18.7 server. The first-run script created the `prosperr_crm` database schema and initial administrator; a live login and Admin dashboard API call both returned successfully. The automated integration suite also runs against H2 in PostgreSQL compatibility mode.
-
-## Next action
-
-Next: implement Block 7 revival if requested, then harden and reconcile metrics against production PostgreSQL. Restart the backend to apply Liquibase changeset 006 locally.
-
-## Verification
-
-- `npm run build` — passed.
-- `npm test` — passed (4 route tests covering auth behavior and BDR organisation navigation/data state).
-- `bash -n backend/scripts/first-run.sh` — passed.
-- `npm audit --omit=dev` — passed with no production dependency vulnerabilities.
-- Full `npm audit` reports five high-severity findings in the dev-toolchain dependency chain through `picomatch`. npm offered only a force fix that downgrades Vite across a major version; that change was not applied. Recheck once upstream packages provide a compatible fix.
-- `mvn -Dmaven.repo.local=/Users/adityaagarwal/.local/m2 test` — passed; one Spring integration test covers valid/invalid login, role permissions, account deactivation, duplicate normalized email, password-hash exclusion, and JWT expiration using H2 in PostgreSQL compatibility mode.
-- First run against local PostgreSQL 18.7 — Liquibase migration succeeded; initial admin login returned HTTP 200 with `mustChangePassword=true`; Admin dashboard summary returned one active account.
-- Block 2.5 — inspected frontend/backend architecture, entities, auth/security, DTOs, reusable UI, tests, and existing ADRs; documented principles, pattern decisions, review findings, quality standards, and implementation history. Its principles guided Block 3.
-- Block 3 — frontend `npm test` passed (4 route tests); `npm run build` passed. Backend `mvn -Dmaven.repo.local=/Users/adityaagarwal/.local/m2 test -q` passed: Block 2 integration (1) and Block 3 integration (1), H2 in PostgreSQL compatibility mode. The UI production build reports a main-bundle chunk-size advisory. Local PostgreSQL now records Liquibase changesets `001` and `002`; the organisation/contact tables and normalized indexes are present. A runtime PostgreSQL `lower(bytea)` error was traced to optional string query bindings; search filters now normalize inputs in Java before binding, with the backend suite passing and equivalent filter SQL verified against PostgreSQL.
-- Block 4 — `npm run build` passed (Vite reports a bundle-size advisory); backend `mvn test` passed, 3 tests total including a prospecting integration flow for lead creation, interested call, follow-up completion with a new call, SQL submission, dashboard metrics, and role rejection. The tests use H2 in PostgreSQL compatibility mode; the local PostgreSQL migration has not been verified in this turn.
-- Block 4 SQL qualification — backend `mvn test` passed (3 integration tests total, including draft/duplicate prevention, submit, manager review and rejection, BDR resubmission, approval audit, eligibility flag, and role checks); frontend `npm test` passed (5 tests); `npm run build` passed with the existing bundle-size advisory. Liquibase changeset 004 was exercised in H2 PostgreSQL compatibility mode; apply it to local PostgreSQL by restarting the backend.
-- Block 5 — backend `mvn -Dmaven.repo.local=/Users/adityaagarwal/.local/m2 test -q` passed (4 integration tests, including approved SQL visibility across managers, unlinked BDR/AE access, inactive-AE rejection, duplicate prevention, reassignment history, notifications/read receipts, meeting/outcome metrics, and revenue). Frontend `npm test -- --run` passed (7 tests); `npm run build` passed with the existing large-chunk advisory; `git diff --check` passed. Changeset 005 was exercised in H2 PostgreSQL compatibility mode; restart the backend to apply it to local PostgreSQL. Expired customer accounts remains clearly unconfigured pending lifecycle/expiry rules.
-- Blocks 6 and 8 — focused backend integration tests for manager assignments, AE lifecycle, and Leadership analytics passed on H2 PostgreSQL compatibility mode. Changeset 006 adds AE lifecycle records; restart the backend to apply it to local PostgreSQL. Leadership revenue uses final Won deal value; SQL conversion is approved ÷ submitted; assignment time is average approval-to-first-assignment duration. Revival performance is unconfigured until Block 7.
-- Current verification — full backend `mvn -Dmaven.repo.local=/Users/adityaagarwal/.local/m2 test -q` passed; frontend `npm test -- --run` passed (7 tests); `npm run build` passed. Vite reports its existing advisory that generated JS chunks exceed 500 kB. `git diff --check` passed.
+Block 7 customer lifecycle/expiry, official currency, SQL acceptance criteria, KPI targets, deployment/security standards, and supported company versions remain open. See [Open Questions](OPEN-QUESTIONS.md).

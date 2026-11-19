@@ -16,4 +16,4 @@ Use one Spring Boot backend deployment organized into business capabilities, wit
 - One backend deployment reduces operational complexity for an internship-sized initial product.
 - Modules still need clear ownership and contracts to avoid a monolith becoming tangled.
 - Frontend and backend can be developed and deployed separately while communicating through JSON APIs.
-- Business capability boundaries still need to follow confirmed workflows. Blocks 0–2 implement identity as the current capability; no business workflow module is implemented yet.
+- As implementation grew, capabilities were added for organisation, prospecting, sales, and analytics. The one-deployable modular-monolith decision remains in force; see current [Development Status](../DEVELOPMENT-STATUS.md).

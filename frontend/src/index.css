@@ -37,3 +37,48 @@ button:disabled { cursor: not-allowed; }
 .control { display: block; width: 100%; margin-top: .375rem; border: 1px solid #cbd5e1; border-radius: .375rem; background: white; padding: .5rem .625rem; color: #0f172a; font-size: .875rem; }
 .control:focus { outline: 2px solid #91bb9f; outline-offset: 1px; }
 ::selection { background: #dcebe1; color: #053f1a; }
+
+@keyframes landing-enter {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes landing-pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(16,185,129,.28); }
+  50% { opacity: .72; box-shadow: 0 0 0 5px rgba(16,185,129,0); }
+}
+@keyframes landing-travel {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(260px); }
+}
+.landing-enter { animation: landing-enter .7s cubic-bezier(.2,.7,.25,1) both; }
+.landing-enter-delay { animation-delay: .12s; }
+.landing-step { animation: landing-enter .55s cubic-bezier(.2,.7,.25,1) both; }
+.landing-pulse { animation: landing-pulse 2.4s ease-in-out infinite; }
+.landing-travel-dot { animation: landing-travel 5s ease-in-out infinite alternate; }
+.landing-grid, .login-grid {
+  background-image: linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px);
+  background-size: 52px 52px;
+  mask-image: linear-gradient(to bottom, black, transparent 90%);
+}
+.landing-orb { background: radial-gradient(circle, rgba(90,184,119,.21), rgba(90,184,119,.04) 48%, transparent 70%); animation: landing-orbit 15s ease-in-out infinite alternate; }
+.landing-orb-two { animation-delay: -5s; background: radial-gradient(circle, rgba(117,217,155,.14), rgba(117,217,155,.025) 48%, transparent 70%); }
+.landing-copy { animation: landing-enter .75s cubic-bezier(.2,.7,.25,1) both; }
+.landing-visual { animation: landing-visual-in .95s cubic-bezier(.2,.7,.25,1) .12s both; }
+.landing-progress-line { position: relative; height: 2px; min-width: 8px; flex: 1; background: #0b3b24; }
+.landing-progress-active { background: linear-gradient(90deg, #0b3b24, #9bc9a9); }
+.landing-progress-muted { background: #e2e8e3; }
+.landing-journey-rail { background: linear-gradient(90deg, #dcebe1 0%, #98c2a5 50%, #dcebe1 100%); }
+.landing-flow-card { animation: landing-enter .65s cubic-bezier(.2,.7,.25,1) both; }
+.login-story { animation: login-pane-in .7s cubic-bezier(.2,.7,.25,1) both; }
+.login-glow { background: radial-gradient(circle, rgba(95,190,127,.2), rgba(95,190,127,.04) 52%, transparent 72%); }
+.login-highlight { animation: landing-enter .55s cubic-bezier(.2,.7,.25,1) both; }
+.login-form-glow { background: radial-gradient(circle, rgba(190,216,198,.42), rgba(237,245,240,.14) 52%, transparent 72%); }
+.login-form-glow-lower { background: radial-gradient(circle, rgba(218,235,222,.5), rgba(218,235,222,.13) 50%, transparent 72%); }
+.login-card { animation: login-card-in .65s cubic-bezier(.2,.7,.25,1) .1s both; }
+@keyframes landing-orbit { from { transform: translate3d(0,0,0) scale(.96); } to { transform: translate3d(-20px,18px,0) scale(1.06); } }
+@keyframes landing-visual-in { from { opacity: 0; transform: translate3d(0,18px,0) scale(.985); } to { opacity: 1; transform: translate3d(0,0,0) scale(1); } }
+@keyframes login-pane-in { from { opacity: 0; transform: translateX(-12px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes login-card-in { from { opacity: 0; transform: translateY(10px) scale(.99); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
