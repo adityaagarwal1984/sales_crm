@@ -1,10 +1,10 @@
 # UI/UX Guidelines and Design System
 
-**Status:** Block 1 foundation implemented; product workflows and business rules remain placeholders.
+**Status:** Shared shell is implemented; workflow behavior is documented by feature blocks.
 
 ## Design direction
 
-- Enterprise SaaS CRM with a light theme, neutral slate background, white content surfaces, subtle borders, restrained shadows, and blue as the primary action accent.
+- Enterprise SaaS CRM with a light theme, neutral background, white content surfaces, subtle borders, restrained shadows, and Prosperr forest green with mint accents.
 - System font stack with consistent sizes and readable line heights. Avoid a remote font dependency in the local foundation.
 - Use compact cards, clear hierarchy, meaningful data visualization, and short transitions. Avoid gradients, oversized panels, and decorative motion.
 - Dashboard records and metrics are clearly labeled as illustrative. Leadership and AE money values use INR formatting only as a visual example; Prosperr's reporting currency and calculation rules remain unconfirmed.
@@ -12,7 +12,7 @@
 ## Tokens and styling
 
 - Tailwind CSS 4 is configured through the Vite plugin and `src/index.css`.
-- Core palette: slate neutrals (`slate-50`/`slate-100` backgrounds, `slate-200` borders, `slate-500` secondary text, `slate-900` primary text) and blue (`blue-600` / `blue-700`) for primary actions and active navigation.
+- Core palette: slate neutrals (`slate-50`/`slate-100` backgrounds, `slate-200` borders, `slate-500` secondary text, `slate-900` primary text) and Prosperr greens for primary actions and active navigation. The public site uses a deep green palette; CRM theme tokens map the existing blue utility classes to `#0b3b24` / `#053f1a`, with pale green surfaces and mint chart accents. The local Prosperr mark is in `frontend/public/prosperr-mark.png`.
 - Success, warning, error, and neutral states use emerald, amber, rose, and slate with readable text labels; color is never the only status signal.
 - Use rounded-md controls, rounded-xl content surfaces, a restrained 1px border, and shared `shadow-card` / `shadow-popover` values.
 - Use `cn()` from `src/lib/utils.js` to merge conditional Tailwind classes. Do not duplicate long shared class strings across pages.
@@ -21,7 +21,7 @@
 ## Shared application shell
 
 - `AppShell` owns the persistent sidebar, top navigation, main content width, and footer.
-- The sidebar contains Prosperr workspace branding, current role, role-specific navigation, and a preview status note.
+- The sidebar contains the Prosperr mark and name, current role, role-specific navigation, and a workspace status note.
 - The top bar contains search scoped to the current dashboard's preview rows, illustrative notifications, and the authenticated profile/logout menu. Role selection is not a UI switcher; the signed-in role determines available routes. On small screens the same search appears in the dashboard toolbar.
 - `PageHeader` supplies breadcrumb, title, description, and optional action placement.
 - Use a fixed-width sidebar on large screens. On small screens, open it as an overlay from the menu button. Main content uses a fluid width capped at 1440px.
@@ -78,4 +78,4 @@ For authentication, use a focused sign-in form with visible field labels and a g
 
 ## Decisions for later review
 
-Brand assets/colors, product-approved currency, dashboard metric definitions, supported viewport/browser matrix, localization, dark mode, table density, notification behavior, and eventual API loading/error states remain open.
+Product-approved currency, dashboard metric definitions, supported viewport/browser matrix, localization, dark mode, table density, notification behavior, and API loading/error states remain open. The public website is the current reference for brand colors and logo; internal brand standards may supersede it later.

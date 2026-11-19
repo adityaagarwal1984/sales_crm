@@ -122,9 +122,9 @@ export const dashboardData = {
 };
 
 export const chartSeries = {
-  ADMIN: [{ key: "created", label: "Created", color: "#2563eb" }, { key: "completed", label: "Completed", color: "#a5b4fc" }],
-  BDR: [{ key: "calls", label: "Calls", color: "#2563eb" }, { key: "followups", label: "Follow-ups", color: "#7c3aed" }],
-  SALES_MANAGER: [{ key: "qualified", label: "Qualified", color: "#2563eb" }, { key: "assigned", label: "Assigned", color: "#14b8a6" }],
-  AE: [{ key: "l1", label: "L1", color: "#2563eb" }, { key: "l2", label: "L2+", color: "#14b8a6" }],
-  LEADERSHIP: [{ key: "revenue", label: "Revenue", color: "#2563eb" }, { key: "pipeline", label: "Pipeline", color: "#a5b4fc" }],
+  ADMIN: [{ key: "created", label: "Created", color: "#0b3b24" }, { key: "completed", label: "Completed", color: "#34d399" }],
+  BDR: [{ key: "calls", label: "Calls", color: "#0b3b24" }, { key: "followups", label: "Follow-ups", color: "#7c3aed" }],
+  SALES_MANAGER: [{ key: "qualified", label: "Qualified", color: "#0b3b24" }, { key: "assigned", label: "Assigned", color: "#34d399" }],
+  AE: [{ key: "l1", label: "L1", color: "#0b3b24" }, { key: "l2", label: "L2+", color: "#34d399" }],
+  LEADERSHIP: [{ key: "revenue", label: "Revenue", color: "#0b3b24" }, { key: "pipeline", label: "Pipeline", color: "#34d399" }],
 };

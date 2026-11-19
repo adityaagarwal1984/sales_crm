@@ -33,6 +33,7 @@ Blocks 0–6 and 8 are implemented. Block 2.5 architecture review and engineerin
 - Implemented the Leadership analytics API and dashboard with date/period, department, employee, and stage filters; organization overview, BDR/manager/AE metrics, funnel, and revenue views.
 - Split Leadership sidebar analytics into focused overview, individual performance, department summaries, sales funnel, and revenue views; shared filters remain available across these views.
 - Updated AE navigation so Meetings, Stakeholders, and Handovers open focused opportunity lists; opportunity cards now expose L1/L2/L3 progression, with an inline reason field for skipping L2.
+- Applied Prosperr's current deep-green/mint palette through shared theme tokens and added the local Prosperr mark before the brand name in the persistent sidebar used by every dashboard.
 - Added Liquibase changeset 003 for BDR prospecting tables and contact creator attribution; updated API and ER documentation plus ADR-0006.
 - Added organisation and contact listing/detail pages, create/edit forms, organisation profile contact section, search, and pagination; records load from the backend API.
 - Updated the ER diagram, API documentation, implementation log, architecture decision record, and current development status. Recorded shared-access and duplicate rules as provisional assumptions for tech-lead confirmation.

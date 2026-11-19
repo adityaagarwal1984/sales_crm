@@ -19,8 +19,8 @@ export function Sidebar({ role, open = false, onClose }) {
       )}>
         <div className="flex h-[72px] items-center justify-between px-5">
           <Link to={dashboardPath} onClick={onClose} className="flex items-center gap-3 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
-            <span className="grid size-9 place-items-center rounded-xl bg-blue-600 text-sm font-bold text-white shadow-sm">P</span>
-            <span><span className="block text-[15px] font-semibold tracking-tight text-slate-950">Prosperr</span><span className="block text-[10px] font-medium uppercase tracking-[.15em] text-slate-400">Sales workspace</span></span>
+            <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-[#edf5f0] p-1.5"><img src="/prosperr-mark.png" alt="" className="size-6 object-contain" /></span>
+            <span><span className="block text-[15px] font-semibold tracking-tight text-[#053f1a]">Prosperr</span><span className="block text-[10px] font-medium uppercase tracking-[.15em] text-slate-400">Sales workspace</span></span>
           </Link>
           <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Close navigation" onClick={onClose}><X className="size-4" /></Button>
         </div>
