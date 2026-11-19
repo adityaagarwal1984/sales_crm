@@ -12,8 +12,8 @@ These documents are the source of truth for the discovery and delivery plan. Ite
 | [Design Patterns](DESIGN-PATTERNS.md) | Pattern suitability matrix and adoption triggers |
 | [Code Quality Standards](CODE-QUALITY-STANDARDS.md) | Backend/frontend conventions, testing, and future-block checklist |
 | [Pattern Implementation Log](PATTERN-IMPLEMENTATION-LOG.md) | Actual selected patterns, examples, alternatives, benefits, and trade-offs |
-| [Database Design](database-design.md) | Implemented identity, organisation/contact, prospecting, and SQL qualification schema plus open data questions |
-| [ER Diagram](er-diagram.md) | Implemented Block 0–4 relationships plus conceptual future modules |
+| [Database Design](database-design.md) | Implemented schema and remaining data questions |
+| [ER Diagram](er-diagram.md) | Implemented relationships through AE lifecycle and conceptual future revival module |
 | [Roles and Permissions](role-permission-matrix.md) | Role capabilities from the supplied brief |
 | [API Documentation](api-documentation.md) | Implemented API groups and contract principles |
 | [UI/UX Guidelines](07-UI-UX-GUIDELINES.md) | Shared design-system and interaction principles |

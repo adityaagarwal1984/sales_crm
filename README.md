@@ -1,6 +1,6 @@
 # Prosperr Sales CRM
 
-An in-house sales CRM for Prosperr. Blocks 0–4 are implemented: project documentation, React UI foundation, Spring Boot identity/authentication, administrator user management, organisation/contact management, and BDR prospecting with SQL qualification review.
+An in-house sales CRM for Prosperr. Blocks 0–6 and 8 are implemented: project documentation, React UI foundation, Spring Boot identity/authentication, administrator user management, organisation/contact management, BDR prospecting and SQL qualification, Sales Manager assignment/performance, AE opportunity lifecycle, and Leadership analytics. Block 7 revival and target management remain pending.
 
 ## Repository layout
 
@@ -20,7 +20,7 @@ Local versions are recorded in [System Architecture](docs/system-architecture.md
 
 ## Local frontend development
 
-Use Node.js 24 LTS. From `frontend/`, run `npm run dev`; run `npm run build` and `npm test` before reviewing changes. Run the backend and PostgreSQL using [`backend/README.md`](backend/README.md). Later sales workflows remain illustrative placeholders. Do not add credentials to the repository.
+Use Node.js 24 LTS. From `frontend/`, run `npm run dev`; run `npm run build` and `npm test` before reviewing changes. Run the backend and PostgreSQL using [`backend/README.md`](backend/README.md). Changeset 006 applies the AE lifecycle schema on backend startup. Block 7 revival and target management remain unimplemented. Do not add credentials to the repository.
 
 ## Documentation
 

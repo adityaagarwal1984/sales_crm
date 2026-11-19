@@ -25,7 +25,7 @@ export function AppShell() {
           <div className="mx-auto w-full max-w-[1440px]"><Outlet context={{ search, setSearch }} /></div>
         </main>
         <footer className="border-t border-slate-200 bg-white px-4 py-3 text-center text-[11px] text-slate-400 sm:px-6 lg:px-8">
-          {role === "ADMIN" ? "Prosperr Sales CRM · Administrator workspace" : role === "BDR" ? "Prosperr Sales CRM · Business Development workspace" : "Prosperr Sales CRM · Dashboard sample content"}
+          {role === "ADMIN" ? "Prosperr Sales CRM · Administrator workspace" : role === "BDR" ? "Prosperr Sales CRM · Business Development workspace" : role === "SALES_MANAGER" ? "Prosperr Sales CRM · Sales Manager workspace" : role === "AE" ? "Prosperr Sales CRM · Account Executive workspace" : "Prosperr Sales CRM · Leadership workspace"}
         </footer>
       </div>
     </div>

@@ -61,9 +61,13 @@ The persisted model currently contains `UserEntity` → `RoleEntity` with a sing
 | ADR-0005 | Keep organisation/contact directories shared while retaining creator traceability. | Implemented | [ADR-0005](adr/ADR-0005-organisation-contact-boundary.md) |
 | ADR-0006 | Model BDR prospecting with owned leads, append-only calls, and independent follow-ups. | Implemented; its initial SQL submission design is superseded | [ADR-0006](adr/ADR-0006-bdr-prospecting-workflow.md) |
 | ADR-0007 | Use a separate qualification lifecycle and append-only manager review history; approval only grants downstream eligibility. | Implemented | [ADR-0007](adr/ADR-0007-sql-qualification-review.md) |
+| ADR-0008 | Scope Sales Manager work to assigned BDR/AE teams; assign only approved SQLs to active team AEs and preserve assignment history. | Implemented | [ADR-0008](adr/ADR-0008-sales-manager-team-and-assignment.md) |
+| ADR-0009 | Give every Sales Manager access to all BDR/AE accounts and SQLs; keep manager links optional. | Implemented; supersedes ADR-0008 access scope | [ADR-0009](adr/ADR-0009-sales-manager-organization-wide-access.md) |
+| ADR-0010 | Use a controlled AE opportunity lifecycle with append-only stage/closure history and manager-approved reopening. | Implemented | [ADR-0010](adr/ADR-0010-ae-opportunity-lifecycle.md) |
+| ADR-0011 | Compute Leadership dashboards from separate database aggregates with explicit KPI formulas. | Implemented | [ADR-0011](adr/ADR-0011-leadership-analytics.md) |
 
-Detailed SQL acceptance scoring, currency, manager team scope, audit retention, reporting, and deployment controls remain open in [Open Questions](OPEN-QUESTIONS.md). Implemented behavior and confirmed role boundaries are recorded in the relevant ADRs.
+Detailed SQL acceptance scoring, currency, customer expiry, audit retention, reporting definitions, and deployment controls remain open in [Open Questions](OPEN-QUESTIONS.md). Implemented behavior and role boundaries are recorded in the relevant ADRs.
 
 ## Historical review gate before Block 3
 
-This was the original gate when the review was written. Blocks 3 and 4 have since been implemented from subsequent user instructions; this section is retained as a historical note.
+This was the original gate when the review was written. Blocks 3, 4, and 5 have since been implemented from subsequent user instructions; this section is retained as a historical note.

@@ -4,7 +4,7 @@
 
 ## Current phase
 
-Blocks 0–4 are implemented. Block 2.5 architecture review and engineering guidelines are documented. Block 4 now includes BDR-owned leads, append-only calls and follow-ups, plus a draft → manager review SQL qualification workflow.
+Blocks 0–6 and 8 are implemented. Block 2.5 architecture review and engineering guidelines are documented. Block 7 (customer revival) and target management remain unimplemented. Sales Managers have organization-wide BDR/AE access; Leadership analytics use real database aggregates.
 
 ## Completed
 
@@ -23,8 +23,16 @@ Blocks 0–4 are implemented. Block 2.5 architecture review and engineering guid
 - Implemented Block 3 organisation/contact entities, repositories, DTOs, services, REST APIs, Liquibase migration, duplicate constraints, paginated search/filtering, and BDR/ADMIN server authorization.
 - Implemented Block 4 lead and calling workflows with BDR ownership, dashboard metrics, immutable call history, and follow-up scheduling/rescheduling/completion. The initial minimal SQL submission endpoint was superseded by the qualification flow below.
 - Connected BDR dashboard, leads, lead call history, calls, follow-ups, and SQL qualification screens to the backend. BDR navigation now opens these live screens.
-- Made organisations and contacts readable across all CRM roles while keeping create/edit access with BDR and ADMIN. Sales Managers receive submitted qualifications with linked lead and primary-contact context; assignment to an AE remains the next workflow block.
-- Implemented SQL qualification drafts, submission, manager approval/rejection, rejection feedback, resubmission, and append-only qualification history. Approved records are marked eligible for AE assignment; this module does not assign an AE.
+- Made organisations and contacts readable across all CRM roles while keeping create/edit access with BDR and ADMIN. Sales Managers receive all BDR submitted qualifications with linked lead and primary-contact context.
+- Implemented SQL qualification drafts, submission, manager approval/rejection, rejection feedback, resubmission, and append-only qualification history.
+- Retained optional manager links in admin user management, while Sales Manager data access applies across all BDR and AE accounts regardless of link.
+- Implemented approved-SQL assignment and active-opportunity reassignment to any active AE. Assignment history is append-only, and assigned AEs receive in-app notifications.
+- Added AE opportunity list, completed-meeting logging, and Won/Lost outcomes so manager performance metrics are backed by real activity records.
+- Added Sales Manager dashboard cards, team performance tables, approved SQL assignment queue, opportunity assignment history, and live notification dropdown.
+- Implemented the AE opportunity lifecycle: L1/L2/L3 stages, completed meeting records and participants, stakeholder roles, follow-ups, stage history, Won/Lost closure records, implementation handover, and manager-approved reopening.
+- Implemented the Leadership analytics API and dashboard with date/period, department, employee, and stage filters; organization overview, BDR/manager/AE metrics, funnel, and revenue views.
+- Split Leadership sidebar analytics into focused overview, individual performance, department summaries, sales funnel, and revenue views; shared filters remain available across these views.
+- Updated AE navigation so Meetings, Stakeholders, and Handovers open focused opportunity lists; opportunity cards now expose L1/L2/L3 progression, with an inline reason field for skipping L2.
 - Added Liquibase changeset 003 for BDR prospecting tables and contact creator attribution; updated API and ER documentation plus ADR-0006.
 - Added organisation and contact listing/detail pages, create/edit forms, organisation profile contact section, search, and pagination; records load from the backend API.
 - Updated the ER diagram, API documentation, implementation log, architecture decision record, and current development status. Recorded shared-access and duplicate rules as provisional assumptions for tech-lead confirmation.
@@ -32,7 +40,7 @@ Blocks 0–4 are implemented. Block 2.5 architecture review and engineering guid
 ## Open / blocked on decisions
 
 - Detailed SQL acceptance criteria and any currency convention for estimated deal value.
-- Role/ownership/manager scope and record visibility.
+- Customer-account lifecycle and expiry rules; detailed SQL acceptance criteria and official currency convention.
 - MVP boundary and acceptance criteria for business features.
 - Production database/service configuration and access-control review.
 - Data model, status transitions, reporting definitions, and deployment constraints.
@@ -46,7 +54,7 @@ Block 2 implementation is running locally against the installed PostgreSQL 18.7 
 
 ## Next action
 
-Implement the next workflow block for Sales Manager → AE assignment after clarifying assignment scope and rules. Confirm the Interested Prospects metric rule (latest call outcome) and SQL acceptance criteria with the tech lead.
+Next: implement Block 7 revival if requested, then harden and reconcile metrics against production PostgreSQL. Restart the backend to apply Liquibase changeset 006 locally.
 
 ## Verification
 
@@ -61,3 +69,6 @@ Implement the next workflow block for Sales Manager → AE assignment after clar
 - Block 3 — frontend `npm test` passed (4 route tests); `npm run build` passed. Backend `mvn -Dmaven.repo.local=/Users/adityaagarwal/.local/m2 test -q` passed: Block 2 integration (1) and Block 3 integration (1), H2 in PostgreSQL compatibility mode. The UI production build reports a main-bundle chunk-size advisory. Local PostgreSQL now records Liquibase changesets `001` and `002`; the organisation/contact tables and normalized indexes are present. A runtime PostgreSQL `lower(bytea)` error was traced to optional string query bindings; search filters now normalize inputs in Java before binding, with the backend suite passing and equivalent filter SQL verified against PostgreSQL.
 - Block 4 — `npm run build` passed (Vite reports a bundle-size advisory); backend `mvn test` passed, 3 tests total including a prospecting integration flow for lead creation, interested call, follow-up completion with a new call, SQL submission, dashboard metrics, and role rejection. The tests use H2 in PostgreSQL compatibility mode; the local PostgreSQL migration has not been verified in this turn.
 - Block 4 SQL qualification — backend `mvn test` passed (3 integration tests total, including draft/duplicate prevention, submit, manager review and rejection, BDR resubmission, approval audit, eligibility flag, and role checks); frontend `npm test` passed (5 tests); `npm run build` passed with the existing bundle-size advisory. Liquibase changeset 004 was exercised in H2 PostgreSQL compatibility mode; apply it to local PostgreSQL by restarting the backend.
+- Block 5 — backend `mvn -Dmaven.repo.local=/Users/adityaagarwal/.local/m2 test -q` passed (4 integration tests, including approved SQL visibility across managers, unlinked BDR/AE access, inactive-AE rejection, duplicate prevention, reassignment history, notifications/read receipts, meeting/outcome metrics, and revenue). Frontend `npm test -- --run` passed (7 tests); `npm run build` passed with the existing large-chunk advisory; `git diff --check` passed. Changeset 005 was exercised in H2 PostgreSQL compatibility mode; restart the backend to apply it to local PostgreSQL. Expired customer accounts remains clearly unconfigured pending lifecycle/expiry rules.
+- Blocks 6 and 8 — focused backend integration tests for manager assignments, AE lifecycle, and Leadership analytics passed on H2 PostgreSQL compatibility mode. Changeset 006 adds AE lifecycle records; restart the backend to apply it to local PostgreSQL. Leadership revenue uses final Won deal value; SQL conversion is approved ÷ submitted; assignment time is average approval-to-first-assignment duration. Revival performance is unconfigured until Block 7.
+- Current verification — full backend `mvn -Dmaven.repo.local=/Users/adityaagarwal/.local/m2 test -q` passed; frontend `npm test -- --run` passed (7 tests); `npm run build` passed. Vite reports its existing advisory that generated JS chunks exceed 500 kB. `git diff --check` passed.

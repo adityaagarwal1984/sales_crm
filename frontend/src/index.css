@@ -22,4 +22,6 @@ body { margin: 0; min-width: 320px; min-height: 100vh; }
 button, input, select, textarea { font: inherit; }
 button { cursor: pointer; }
 button:disabled { cursor: not-allowed; }
+.control { display: block; width: 100%; margin-top: .375rem; border: 1px solid #cbd5e1; border-radius: .375rem; background: white; padding: .5rem .625rem; color: #0f172a; font-size: .875rem; }
+.control:focus { outline: 2px solid #93c5fd; outline-offset: 1px; }
 ::selection { background: #dbeafe; color: #1e3a8a; }

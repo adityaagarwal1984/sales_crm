@@ -1,6 +1,6 @@
 # System Architecture
 
-**Status:** Blocks 0–2 implementation snapshot. Deployment, business workflows, integrations, and several operational requirements remain open.
+**Status:** Current through Block 5. Deployment, later AE workflow stages, integrations, and several operational requirements remain open.
 
 ## Current shape
 
@@ -34,9 +34,11 @@ The frontend uses JavaScript, Vite, and Node.js 24 LTS. The backend build now ta
 
 Block 2 uses BCrypt and 15-minute signed JWT access tokens. The API returns the token at login; React keeps it in memory, with no refresh token. The JWT filter loads the current user on each request so deactivated accounts lose access immediately. One role is assigned per account. The first admin is seeded from environment configuration; admin-issued temporary passwords must be changed at next login. Backend endpoint authorization remains authoritative.
 
-## Future capabilities (not implemented)
+Block 5 gives every Sales Manager organization-wide access to BDR SQL review, opportunities, and BDR/AE performance. Approved SQLs may be assigned to any active AE; optional `manager_id` links are admin metadata and do not limit visibility. AE endpoints only expose the AE's own active assignments. Notifications are stored and read by their recipient only.
 
-Targets, organisations/contacts, qualification/review, opportunities/meetings, outcomes/handover, revival, and reporting. Some may combine or split after workflow clarification. Identity/access and basic administrator user management are implemented in Block 2.
+## Implemented business capabilities
+
+Organisation/contact records; BDR leads, calls and follow-ups; SQL qualification/review; organization-wide manager dashboard and AE assignment; assignment history and in-app notifications; completed AE meeting logging and Won/Lost outcomes. Full opportunity stages, stakeholder management, L1/L2/L3 workflows, implementation handover, revival, targets, and leadership reporting remain for later blocks.
 
 ## Operational decisions still open
 
@@ -49,4 +51,4 @@ Java/Spring Boot and Node/package-manager versions; PostgreSQL hosting/version; 
 - Treat server-side authorization and input validation as mandatory.
 - Add indexes and pagination based on query patterns, not guesses.
 - Document changes and database migrations alongside each feature.
-- See the Block 2.5 [architecture review](ARCHITECTURE-DECISIONS.md), [design principles](DESIGN-PRINCIPLES.md), [pattern matrix](DESIGN-PATTERNS.md), and [quality standards](CODE-QUALITY-STANDARDS.md) before starting Block 3.
+- See the Block 2.5 [architecture review](ARCHITECTURE-DECISIONS.md), [design principles](DESIGN-PRINCIPLES.md), [pattern matrix](DESIGN-PATTERNS.md), and [quality standards](CODE-QUALITY-STANDARDS.md) before starting the next module.

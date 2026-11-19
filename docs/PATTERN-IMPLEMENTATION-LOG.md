@@ -103,7 +103,7 @@ This log distinguishes code the project actually uses from patterns that are rec
 - **Benefits:** Named claim construction and library-managed serialization.
 - **Trade-offs:** This is library-owned; it is not a project-specific Builder abstraction. Do not add builders for simple DTOs without a construction problem.
 
-## Not implemented in Blocks 0–2
+## Not implemented as custom abstractions
 
 Factory Method, custom Adapter, custom Decorator, Facade, Strategy, domain Observer/event bus, State objects, Template Method, and Domain Events are not implemented. Their current fit and triggers are in [`DESIGN-PATTERNS.md`](DESIGN-PATTERNS.md). Do not list them as implemented merely because the frameworks expose related features.
 
@@ -164,3 +164,44 @@ No Strategy, State, Factory, Observer, Specification, or event-bus pattern was a
 - **Tests:** `Block4ProspectingIntegrationTest` exercises duplicate prevention, form/link validation, rejection feedback, resubmission, approval actor/time, eligibility, and authorization.
 
 See [ADR-0007](adr/ADR-0007-sql-qualification-review.md).
+
+## Block 5 Sales Manager module (2026-11-19)
+
+**Pattern decision:** Reuse MVC, Service Layer, Repository, DTO, and constructor injection. No additional named design pattern was needed.
+
+- **Problem:** Restrict manager work to their team, assign approved SQLs to active AEs, support reassignment, retain history, and provide a real in-app notification and performance view.
+- **Selected approach:** A direct optional `manager_id` user relationship, one opportunity per approved SQL, an append-only assignment audit table, a recipient-owned notification table, and explicit service authorization/state checks.
+- **Alternatives considered:** Organization-wide manager queries, unrestricted AE assignment, a new opportunity row on every reassignment, a standalone Team aggregate, or a general event-bus/notification framework. The first three violate access/history/duplicate requirements; no multi-level hierarchy or independent event consumer exists to justify the latter abstractions.
+- **Classes/files:** `UserEntity`, `AdminUserService`, `OpportunityEntity`, `OpportunityAssignmentHistoryEntity`, `OpportunityMeetingEntity`, `AppNotificationEntity`, their repositories/services/controllers, changeset 005, and React manager/AE pages and TopBar notifications.
+- **Actual example:** `OpportunityService.reassign()` verifies SALES_MANAGER access, active-AE status, and ACTIVE opportunity state, changes the current assignee, appends the prior/new owners and actor, and writes a recipient notification transactionally.
+- **Benefits:** Cross-team reads are denied server-side, a pursuit cannot have duplicate active opportunity rows, and assignment changes remain reviewable. Managers see BDR discovery metrics and AE meeting/win/revenue metrics from stored records.
+- **Trade-offs:** All Sales Managers can access every BDR and AE record. INR and won/assigned conversion are provisional, and expired customer accounts are not numeric until the customer lifecycle is specified.
+- **Tests:** `Block5SalesManagerIntegrationTest` covers assignment constraints, inactive AE denial, history, notifications, cross-manager visibility, activity metrics, and revenue.
+
+See [ADR-0008](adr/ADR-0008-sales-manager-team-and-assignment.md).
+
+## Block 6 AE opportunity lifecycle (2026-11-19)
+
+**Pattern decision:** Reuse MVC, Service Layer, Repository, DTO, and constructor injection. Use enums and explicit transactional lifecycle operations rather than a class hierarchy per state.
+
+- **Problem:** Enforce AE ownership, stage progression, mandatory close data, immutable event history, and manager-reviewed reopening.
+- **Selected approach:** `OpportunityLifecycleService` validates transitions; separate append-only entities record stage changes, closure snapshots, and reopen decisions. Meeting completion and stage changes are coordinated in the same application service. Database uniqueness prevents duplicate stakeholder role links; handovers are per Won closure.
+- **Alternatives considered:** State pattern classes per stage (only five fixed states and a linear flow, so more indirection than value); mutable status-only updates (lose auditability); event bus/domain events (no independent consumers); unrestricted reopening (contradicts approved business rule).
+- **Classes/files:** `sales/service/OpportunityLifecycleService.java`, `OpportunityEntity`, `OpportunityStageHistoryEntity`, `OpportunityClosureEntity`, `OpportunityReopenRequestEntity`, `OpportunityStakeholderEntity`, `ImplementationHandoverEntity`, meeting entities/repositories, `AeOpportunityController`, manager reopen routes, changeset 006, and `frontend/src/pages/ae/`.
+- **Actual example:** On approval, manager review records reviewer/time and appends a transition from terminal status to L3. Won/Lost closure snapshots are preserved even if the opportunity later reopens; a subsequent Won creates a separate handover.
+- **Benefits:** Stage and closure history remain reviewable, invalid transitions are blocked in the service, and access is checked against current AE assignment.
+- **Trade-offs:** Explicit transition logic grows as rules evolve; manager review has no SLA or notification yet. Meeting records represent completed meetings; scheduling is outside this block.
+- **Tests:** `Block6AeLifecycleIntegrationTest` covers stage progression, skip reasons, stakeholders, meetings/follow-ups, Won/Lost, re-open approval, repeat close history, handovers, and access control.
+
+## Block 8 Leadership analytics (2026-11-19)
+
+**Pattern decision:** Use a read-only analytics service with purpose-built SQL aggregates; no generic reporting framework or event-driven materialized projections.
+
+- **Problem:** Provide organization-wide dashboard metrics and filters without counting joins (such as multiple contacts) more than once.
+- **Selected approach:** `LeadershipAnalyticsService` runs separate named-parameter aggregate queries and assembles API DTOs. KPI formulas are fixed and documented: final Won deal value for revenue; approved SQLs ÷ submitted SQLs for SQL conversion; average approval-to-first-assignment duration for assignment time.
+- **Alternatives considered:** JPA entity graph followed by in-memory grouping (unbounded and duplicate-prone); one broad multi-join query (fan-out miscounts); materialized views/event projections (no volume or latency requirement yet).
+- **Classes/files:** `analytics/service/LeadershipAnalyticsService.java`, `analytics/api/LeadershipAnalyticsController.java`, `SalesDtos`/analytics DTOs, security configuration, `frontend/src/pages/leadership/LeadershipDashboardPage.jsx`.
+- **Actual example:** Overview counts organisations and contacts independently; funnel and revenue aggregations query their respective event/source tables and are combined only in the response, preventing contact joins from multiplying company counts.
+- **Benefits:** Dashboard values come from PostgreSQL-backed data; filters and aggregation boundaries are explicit; endpoints are read-only and role-protected.
+- **Trade-offs:** Queries are hand-authored and need review as schema/volume changes. Revival performance remains unconfigured until Block 7 defines revival records.
+- **Tests:** `Block8LeadershipAnalyticsIntegrationTest` covers seeded end-to-end metrics, filters, revenue/funnel, and non-Leadership denial.

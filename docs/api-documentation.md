@@ -1,6 +1,6 @@
 # API Documentation
 
-**Status:** Identity, organisation/contact, BDR prospecting, and SQL qualification/review routes are implemented. Later business-module routes remain draft pending tech-lead decisions.
+**Status:** Identity, organisation/contact, BDR prospecting, SQL qualification/review, Sales Manager assignments/performance, and basic AE opportunity activity routes are implemented. Later sales stages remain draft pending tech-lead decisions.
 
 ## Proposed conventions
 
@@ -39,7 +39,7 @@ These paths are a working draft for the authentication/user-management block and
 | GET | `/api/v1/admin/users` | ADMIN | List users (pagination/search are not included in this first MVP) |
 | POST | `/api/v1/admin/users` | ADMIN | Create a user with one role and temporary password |
 | GET | `/api/v1/admin/users/{id}` | ADMIN | View a safe user profile |
-| PUT | `/api/v1/admin/users/{id}` | ADMIN | Edit name, email, or role |
+| PUT | `/api/v1/admin/users/{id}` | ADMIN | Edit profile/role and assign a BDR or AE to a Sales Manager with `managerId` |
 | PATCH | `/api/v1/admin/users/{id}/status` | ADMIN | Activate or deactivate an account |
 | POST | `/api/v1/admin/users/{id}/password-reset` | ADMIN | Set temporary password; next login requires change |
 
@@ -95,5 +95,40 @@ All endpoints below require an authenticated token. Lead, call, follow-up, and q
 | GET | `/api/v1/sales-manager/sql-qualifications/{id}` | Review qualification details and immutable history snapshots |
 | POST | `/api/v1/sales-manager/sql-qualifications/{id}/approve` | Approve a submitted qualification; records reviewer and timestamp |
 | POST | `/api/v1/sales-manager/sql-qualifications/{id}/reject` | Reject a submitted qualification with `{ "reason": "..." }` |
+
+## Blocks 5–6 Sales Manager and AE endpoints
+
+Sales Manager endpoints are available to every active Sales Manager across BDR and AE accounts, independent of optional `managerId` links. AE endpoints are restricted to the signed-in AE's current assignments. All endpoints require authentication; role and ownership checks are enforced by Spring Security and the services.
+
+| Method | Path | Access | Purpose |
+|---|---|---|---|
+| GET | `/api/v1/sales-manager/dashboard` | SALES_MANAGER | Team counts, SQL review totals, opportunity totals, conversion, and expiry configuration state |
+| GET | `/api/v1/sales-manager/team-performance` | SALES_MANAGER | BDR discovery/call/SQL and AE assignment/meeting/win/revenue metrics |
+| GET | `/api/v1/sales-manager/account-executives` | SALES_MANAGER | List active AEs |
+| GET | `/api/v1/sales-manager/sql-qualifications/approved-for-assignment` | SALES_MANAGER | Page approved unassigned SQLs |
+| POST | `/api/v1/sales-manager/sql-qualifications/{id}/assign` | SALES_MANAGER | Create and assign one opportunity to an active AE |
+| GET | `/api/v1/sales-manager/opportunities` | SALES_MANAGER | Page all current opportunities |
+| PUT | `/api/v1/sales-manager/opportunities/{id}/assignment` | SALES_MANAGER | Reassign an open opportunity to an active AE |
+| GET | `/api/v1/sales-manager/opportunities/{id}/assignment-history` | SALES_MANAGER | View immutable assignment events |
+| GET | `/api/v1/sales-manager/opportunity-reopen-requests` | SALES_MANAGER | View pending AE reopen requests |
+| POST | `/api/v1/sales-manager/opportunity-reopen-requests/{id}/decision` | SALES_MANAGER | Approve or reject with reason; approval resumes at L3 |
+| GET | `/api/v1/ae/opportunities/dashboard` | AE | Return assigned-opportunity, stage, follow-up, pipeline, won/lost, and revenue metrics |
+| GET | `/api/v1/ae/opportunities` | AE | Page current assignments |
+| GET | `/api/v1/ae/opportunities/{id}` | Assigned AE | View organisation, contacts, SQL qualification, assignment/stage/closure history, stakeholders, meetings, and handovers |
+| POST | `/api/v1/ae/opportunities/{id}/meetings` | Assigned AE | Append a completed meeting with type, level, participants, outcome, notes, and follow-up |
+| PATCH | `/api/v1/ae/opportunities/{id}/stage` | Assigned AE | Advance stage; skipping requires a reason |
+| PATCH | `/api/v1/ae/opportunities/{id}/close-won` | Assigned AE | Close from L3 with final deal value and commercial details; creates handover |
+| PATCH | `/api/v1/ae/opportunities/{id}/close-lost` | Assigned AE | Close from L3 with lost reason and closure notes |
+| POST/DELETE | `/api/v1/ae/opportunities/{id}/stakeholders[/{contactId}]` | Assigned AE | Add/remove opportunity stakeholders linked to the same organisation |
+| POST | `/api/v1/ae/opportunities/{id}/meetings/{meetingId}/follow-up/complete` | Assigned AE | Complete a follow-up for the assigned opportunity |
+| POST | `/api/v1/ae/opportunities/{id}/reopen-request` | Assigned AE | Request manager approval to reopen a closed opportunity |
+| GET | `/api/v1/leadership/analytics/filters` | LEADERSHIP | Return employee/department/stage filter options |
+| GET | `/api/v1/leadership/analytics/{overview,bdrs,sales-managers,aes,funnel,revenue}` | LEADERSHIP | Return filtered real-data organization and role analytics |
+| GET | `/api/v1/notifications` | Authenticated | List notifications for the signed-in user and unread count |
+| POST | `/api/v1/notifications/{id}/read` | Authenticated | Mark one of the signed-in user's notifications read |
+
+Opportunity stages are `L1`, `L2`, `L3`, `WON`, and `LOST`. Forward skipping is permitted only when a reason is supplied; closing is allowed only from L3. A completed L1 or L2 meeting at the matching level advances that stage; meeting type and current stage are separate concepts. Won and Lost closure snapshots are immutable. Reopening requires a Sales Manager decision, returns the opportunity to L3, and preserves prior close records. Each Won closure creates its own handover record.
+
+Leadership analytics accepts `from`, `to`, `year`, `month`, `quarter`, `department`, `employeeId`, and `stage` filters. Revenue is the sum of final Won deal values; SQL conversion is approved SQL count divided by submitted SQL count; assignment time is the average duration from approval to first assignment. Organisation and contact counts use separate aggregates to avoid join fan-out. Expired-account revival performance returns unconfigured until the Block 7 customer lifecycle is implemented.
 
 Call outcomes: `CONNECTED`, `NOT_CONNECTED`, `BUSY`, `CALL_BACK_LATER`, `INTERESTED`, `NOT_INTERESTED`, `INVALID_NUMBER`. Qualification submission requires a business requirement, a yes/no decision-maker value, decision-maker details when yes, estimated deal value, and expected timeline. Only one qualification record can exist per lead; rejected records can be edited and resubmitted, preserving each decision and snapshot in history. Approval marks a qualification eligible for AE assignment, but this API does not assign an AE. The older `sql_submission` table and read endpoint are retained for records from the initial Block 4 flow; new qualification work uses `sql_qualification`.

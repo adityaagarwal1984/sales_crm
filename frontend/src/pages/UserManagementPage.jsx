@@ -1,8 +1,74 @@
-import{useEffect,useState}from"react";import{api}from"@/lib/api";
-const roles=["ADMIN","BDR","SALES_MANAGER","AE","LEADERSHIP"];
-export function UserManagementPage(){const[users,setUsers]=useState([]),[error,setError]=useState(""),[busy,setBusy]=useState(false);async function load(){try{const r=await api.get("/admin/users");setUsers(r.data);setError("");}catch{setError("Could not load users. Confirm that you are signed in as an administrator.");}}useEffect(()=>{load();},[]);
- async function create(e){e.preventDefault();const f=new FormData(e.currentTarget);setBusy(true);try{await api.post("/admin/users",{fullName:f.get("fullName"),email:f.get("email"),role:f.get("role"),temporaryPassword:f.get("temporaryPassword")});e.currentTarget.reset();await load();}catch{setError("User could not be created. Check required fields and ensure the email is unique.");}finally{setBusy(false);}}
- async function toggle(u){try{await api.patch(`/admin/users/${u.id}/status`,{active:!u.active});await load();}catch{setError("Status update failed. The last active administrator cannot be deactivated.");}}
- async function edit(u){const fullName=window.prompt("Full name:",u.fullName);if(fullName===null)return;const email=window.prompt("Work email:",u.email);if(email===null)return;const role=window.prompt(`Role (${roles.join(", ")}):`,u.role);if(role===null)return;if(!roles.includes(role)){setError("Choose one of the listed roles.");return;}try{await api.put(`/admin/users/${u.id}`,{fullName,email,role});await load();}catch{setError("User update failed. Check the email and role; the last active administrator must remain an administrator.");}}
- async function reset(u){const temporaryPassword=window.prompt("Enter a temporary password (at least 12 characters):");if(!temporaryPassword)return;try{await api.post(`/admin/users/${u.id}/password-reset`,{temporaryPassword});window.alert("Temporary password set; user must change it at next sign in.");await load();}catch{setError("Password reset failed. Use at least 12 characters.");}}
- return <main className="space-y-6"><header><p className="text-xs text-slate-500">Workspace / Administrator / Users & roles</p><h1 className="mt-2 text-2xl font-semibold">Users & roles</h1><p className="mt-1 text-sm text-slate-500">Create accounts and manage access to the CRM.</p></header>{error&&<p role="alert" className="rounded-md bg-red-50 p-3 text-sm text-red-700">{error}</p>}<form onSubmit={create} className="grid gap-3 rounded-xl border bg-white p-5 md:grid-cols-5"><input name="fullName" required maxLength="120" placeholder="Full name" className="rounded-md border px-3 py-2"/><input name="email" type="email" required placeholder="Work email" className="rounded-md border px-3 py-2"/><select name="role" className="rounded-md border px-3 py-2">{roles.map(r=><option key={r}>{r}</option>)}</select><input name="temporaryPassword" type="password" minLength="12" maxLength="72" required placeholder="Temporary password (12–72 characters)" className="rounded-md border px-3 py-2"/><button disabled={busy} className="rounded-md bg-blue-600 px-3 py-2 text-white">Create user</button></form><div className="overflow-x-auto rounded-xl border bg-white"><table className="w-full text-left text-sm"><thead className="bg-slate-50 text-xs text-slate-500"><tr>{["Name","Email","Role","Status","Actions"].map(x=><th key={x} className="px-4 py-3">{x}</th>)}</tr></thead><tbody>{users.map(u=><tr key={u.id} className="border-t"><td className="px-4 py-3 font-medium">{u.fullName}</td><td className="px-4 py-3">{u.email}</td><td className="px-4 py-3">{u.role}</td><td className="px-4 py-3">{u.active?"Active":"Inactive"}</td><td className="space-x-3 px-4 py-3"><button onClick={()=>edit(u)} className="text-blue-700">Edit</button><button onClick={()=>toggle(u)} className="text-blue-700">{u.active?"Deactivate":"Activate"}</button><button onClick={()=>reset(u)} className="text-blue-700">Reset password</button></td></tr>)}{!users.length&&<tr><td colSpan="5" className="p-8 text-center text-slate-500">No users found.</td></tr>}</tbody></table></div></main>}
+import { useEffect, useMemo, useState } from "react";
+import { api } from "@/lib/api";
+
+const roles = ["ADMIN", "BDR", "SALES_MANAGER", "AE", "LEADERSHIP"];
+const requiresManager = role => role === "BDR" || role === "AE";
+
+export function UserManagementPage() {
+  const [users, setUsers] = useState([]);
+  const [role, setRole] = useState("ADMIN");
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
+  const managers = useMemo(() => users.filter(user => user.role === "SALES_MANAGER" && user.active), [users]);
+
+  async function load() {
+    try { const response = await api.get("/admin/users"); setUsers(response.data); setError(""); }
+    catch { setError("Could not load users. Confirm that you are signed in as an administrator."); }
+  }
+  useEffect(() => { load(); }, []);
+
+  async function create(event) {
+    event.preventDefault();
+    const values = new FormData(event.currentTarget);
+    setBusy(true);
+    try {
+      await api.post("/admin/users", {
+        fullName: values.get("fullName"), email: values.get("email"), role,
+        managerId: requiresManager(role) ? values.get("managerId") || null : null,
+        temporaryPassword: values.get("temporaryPassword"),
+      });
+      event.currentTarget.reset(); setRole("ADMIN"); await load();
+    } catch (e) { setError(e.response?.data?.message || "User could not be created. Check the required fields and unique email."); }
+    finally { setBusy(false); }
+  }
+
+  async function toggle(user) {
+    try { await api.patch(`/admin/users/${user.id}/status`, { active: !user.active }); await load(); }
+    catch { setError("Status update failed. The last active administrator cannot be deactivated."); }
+  }
+
+  async function edit(user) {
+    const fullName = window.prompt("Full name:", user.fullName); if (fullName === null) return;
+    const email = window.prompt("Work email:", user.email); if (email === null) return;
+    const nextRole = window.prompt(`Role (${roles.join(", ")}):`, user.role); if (nextRole === null) return;
+    if (!roles.includes(nextRole)) { setError("Choose one of the listed roles."); return; }
+    try { await api.put(`/admin/users/${user.id}`, { fullName, email, role: nextRole, managerId: requiresManager(nextRole) ? user.managerId : null }); await load(); }
+    catch (e) { setError(e.response?.data?.message || "User update failed. Check the email, role and team assignment."); }
+  }
+
+  async function setManager(user, managerId) {
+    try { await api.put(`/admin/users/${user.id}`, { fullName: user.fullName, email: user.email, role: user.role, managerId: managerId || null }); await load(); }
+    catch (e) { setError(e.response?.data?.message || "Team assignment could not be updated."); }
+  }
+
+  async function reset(user) {
+    const temporaryPassword = window.prompt("Enter a temporary password (at least 12 characters):"); if (!temporaryPassword) return;
+    try { await api.post(`/admin/users/${user.id}/password-reset`, { temporaryPassword }); window.alert("Temporary password set; user must change it at next sign in."); await load(); }
+    catch { setError("Password reset failed. Use at least 12 characters."); }
+  }
+
+  return <main className="space-y-6">
+    <header><p className="text-xs text-slate-500">Workspace / Administrator / Users & roles</p><h1 className="mt-2 text-2xl font-semibold">Users & roles</h1><p className="mt-1 text-sm text-slate-500">Create accounts and manage role access. Every Sales Manager can view all BDR and AE accounts.</p></header>
+    {error && <p role="alert" className="rounded-md bg-red-50 p-3 text-sm text-red-700">{error}</p>}
+    <form onSubmit={create} className="grid gap-3 rounded-xl border bg-white p-5 md:grid-cols-6">
+      <input name="fullName" required maxLength="120" placeholder="Full name" className="rounded-md border px-3 py-2"/>
+      <input name="email" type="email" required placeholder="Work email" className="rounded-md border px-3 py-2"/>
+      <select name="role" value={role} onChange={e => setRole(e.target.value)} className="rounded-md border px-3 py-2">{roles.map(item => <option key={item}>{item}</option>)}</select>
+      <select name="managerId" disabled={!requiresManager(role)} className="rounded-md border px-3 py-2 disabled:bg-slate-50"><option value="">Optional manager link</option>{managers.map(manager => <option value={manager.id} key={manager.id}>{manager.fullName}</option>)}</select>
+      <input name="temporaryPassword" type="password" minLength="12" maxLength="72" required placeholder="Temporary password" className="rounded-md border px-3 py-2"/>
+      <button disabled={busy} className="rounded-md bg-blue-600 px-3 py-2 text-white disabled:opacity-50">Create user</button>
+    </form>
+    {!managers.length && <p className="-mt-4 text-xs text-slate-500">A manager link is optional; all Sales Managers can access BDR and AE records.</p>}
+    <div className="overflow-x-auto rounded-xl border bg-white"><table className="w-full min-w-[900px] text-left text-sm"><thead className="bg-slate-50 text-xs text-slate-500"><tr>{["Name","Email","Role","Sales Manager","Status","Actions"].map(label=><th key={label} className="px-4 py-3">{label}</th>)}</tr></thead><tbody>{users.map(user=><tr key={user.id} className="border-t"><td className="px-4 py-3 font-medium">{user.fullName}</td><td className="px-4 py-3">{user.email}</td><td className="px-4 py-3">{user.role}</td><td className="px-4 py-3">{requiresManager(user.role) ? <select aria-label={`Sales Manager for ${user.fullName}`} value={user.managerId || ""} onChange={e=>setManager(user,e.target.value)} className="h-8 rounded-md border px-2"><option value="">Unassigned</option>{managers.map(manager=><option key={manager.id} value={manager.id}>{manager.fullName}</option>)}</select> : "—"}</td><td className="px-4 py-3">{user.active ? "Active" : "Inactive"}</td><td className="space-x-3 whitespace-nowrap px-4 py-3"><button onClick={()=>edit(user)} className="text-blue-700">Edit</button><button onClick={()=>toggle(user)} className="text-blue-700">{user.active ? "Deactivate" : "Activate"}</button><button onClick={()=>reset(user)} className="text-blue-700">Reset password</button></td></tr>)}{!users.length&&<tr><td colSpan="6" className="p-8 text-center text-slate-500">No users found.</td></tr>}</tbody></table></div>
+  </main>;
+}

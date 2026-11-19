@@ -34,6 +34,10 @@ public class UserEntity {
     @JoinColumn(name = "role_code", nullable = false)
     private RoleEntity role;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "manager_id")
+    private UserEntity salesManager;
+
     @Column(name = "active", nullable = false)
     private boolean active;
 
@@ -80,17 +84,21 @@ public class UserEntity {
     public String getEmail() { return email; }
     public String getPasswordHash() { return passwordHash; }
     public RoleEntity getRole() { return role; }
+    public UserEntity getSalesManager() { return salesManager; }
     public boolean isActive() { return active; }
     public boolean isMustChangePassword() { return mustChangePassword; }
     public Instant getCredentialsChangedAt() { return credentialsChangedAt; }
     public Instant getCreatedAt() { return createdAt; }
     public Instant getUpdatedAt() { return updatedAt; }
 
-    public void updateProfile(String fullName, String email, RoleEntity role) {
+    public void updateProfile(String fullName, String email, RoleEntity role, UserEntity salesManager) {
         this.fullName = fullName;
         this.email = email;
         this.role = role;
+        this.salesManager = salesManager;
     }
+
+    public void assignToManager(UserEntity salesManager) { this.salesManager = salesManager; }
 
     public void setActive(boolean active) { this.active = active; }
 

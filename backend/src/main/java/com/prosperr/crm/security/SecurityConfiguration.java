@@ -35,6 +35,8 @@ public class SecurityConfiguration {
                 .requestMatchers("/api/v1/bdr/sql-qualifications/**").hasRole("BDR")
                 .requestMatchers("/api/v1/sales-manager/sql-qualifications/**").hasRole("SALES_MANAGER")
                 .requestMatchers("/api/v1/sales-manager/**").hasRole("SALES_MANAGER")
+                .requestMatchers("/api/v1/leadership/**").hasRole("LEADERSHIP")
+                .requestMatchers("/api/v1/ae/**").hasRole("AE")
                 .requestMatchers("/api/v1/bdr/**").hasRole("BDR")
                 .requestMatchers(HttpMethod.GET, "/api/v1/organisations/**", "/api/v1/contacts/**").hasAnyRole("ADMIN", "BDR", "SALES_MANAGER", "AE", "LEADERSHIP")
                 .requestMatchers("/api/v1/organisations/**", "/api/v1/contacts/**").hasAnyRole("ADMIN", "BDR")
@@ -44,7 +46,7 @@ public class SecurityConfiguration {
         return http.build();
     }
     @Bean CorsConfigurationSource corsConfigurationSource(@Value("${app.cors.allowed-origin:http://localhost:5173}") String origin) {
-        CorsConfiguration c = new CorsConfiguration(); c.setAllowedOrigins(java.util.List.of(origin)); c.setAllowedMethods(java.util.List.of("GET","POST","PUT","PATCH","OPTIONS")); c.setAllowedHeaders(java.util.List.of("Authorization","Content-Type"));
+        CorsConfiguration c = new CorsConfiguration(); c.setAllowedOrigins(java.util.List.of(origin)); c.setAllowedMethods(java.util.List.of("GET","POST","PUT","PATCH","DELETE","OPTIONS")); c.setAllowedHeaders(java.util.List.of("Authorization","Content-Type"));
         UrlBasedCorsConfigurationSource s = new UrlBasedCorsConfigurationSource(); s.registerCorsConfiguration("/**", c); return s;
     }
 }

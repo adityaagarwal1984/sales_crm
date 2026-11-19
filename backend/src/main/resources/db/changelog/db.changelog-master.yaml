@@ -437,3 +437,392 @@ databaseChangeLog:
             columns:
               - column: { name: qualification_id }
               - column: { name: created_at }
+  - changeSet:
+      id: 005-sales-manager-team-opportunities
+      author: prosperr
+      changes:
+        - addColumn:
+            tableName: app_user
+            columns:
+              - column: { name: manager_id, type: uuid }
+        - addForeignKeyConstraint:
+            baseTableName: app_user
+            baseColumnNames: manager_id
+            referencedTableName: app_user
+            referencedColumnNames: id
+            constraintName: fk_app_user_sales_manager
+        - createIndex:
+            tableName: app_user
+            indexName: ix_app_user_manager_role
+            columns:
+              - column: { name: manager_id }
+              - column: { name: role_code }
+        - createTable:
+            tableName: sales_opportunity
+            columns:
+              - column: { name: id, type: uuid, constraints: { primaryKey: true, nullable: false } }
+              - column: { name: sql_qualification_id, type: uuid, constraints: { nullable: false, unique: true, uniqueConstraintName: uq_opportunity_sql_qualification } }
+              - column: { name: assigned_ae_id, type: uuid, constraints: { nullable: false } }
+              - column: { name: assigned_by, type: uuid, constraints: { nullable: false } }
+              - column: { name: status, type: varchar(20), defaultValue: ACTIVE, constraints: { nullable: false } }
+              - column: { name: amount, type: "numeric(14,2)", constraints: { nullable: false } }
+              - column: { name: currency_code, type: varchar(3), defaultValue: INR, constraints: { nullable: false } }
+              - column: { name: assigned_at, type: timestamp with time zone, constraints: { nullable: false } }
+              - column: { name: created_at, type: timestamp with time zone, defaultValueComputed: CURRENT_TIMESTAMP, constraints: { nullable: false } }
+              - column: { name: updated_at, type: timestamp with time zone, defaultValueComputed: CURRENT_TIMESTAMP, constraints: { nullable: false } }
+              - column: { name: version, type: bigint, defaultValueNumeric: 0, constraints: { nullable: false } }
+        - addForeignKeyConstraint:
+            baseTableName: sales_opportunity
+            baseColumnNames: sql_qualification_id
+            referencedTableName: sql_qualification
+            referencedColumnNames: id
+            constraintName: fk_sales_opportunity_qualification
+        - addForeignKeyConstraint:
+            baseTableName: sales_opportunity
+            baseColumnNames: assigned_ae_id
+            referencedTableName: app_user
+            referencedColumnNames: id
+            constraintName: fk_sales_opportunity_assigned_ae
+        - addForeignKeyConstraint:
+            baseTableName: sales_opportunity
+            baseColumnNames: assigned_by
+            referencedTableName: app_user
+            referencedColumnNames: id
+            constraintName: fk_sales_opportunity_assigned_by
+        - createIndex:
+            tableName: sales_opportunity
+            indexName: ix_sales_opportunity_ae_status
+            columns:
+              - column: { name: assigned_ae_id }
+              - column: { name: status }
+        - createTable:
+            tableName: opportunity_assignment_history
+            columns:
+              - column: { name: id, type: uuid, constraints: { primaryKey: true, nullable: false } }
+              - column: { name: opportunity_id, type: uuid, constraints: { nullable: false } }
+              - column: { name: previous_ae_id, type: uuid }
+              - column: { name: assigned_ae_id, type: uuid, constraints: { nullable: false } }
+              - column: { name: assigned_by, type: uuid, constraints: { nullable: false } }
+              - column: { name: action, type: varchar(20), constraints: { nullable: false } }
+              - column: { name: created_at, type: timestamp with time zone, defaultValueComputed: CURRENT_TIMESTAMP, constraints: { nullable: false } }
+        - addForeignKeyConstraint:
+            baseTableName: opportunity_assignment_history
+            baseColumnNames: opportunity_id
+            referencedTableName: sales_opportunity
+            referencedColumnNames: id
+            constraintName: fk_opportunity_assignment_history_opportunity
+        - addForeignKeyConstraint:
+            baseTableName: opportunity_assignment_history
+            baseColumnNames: previous_ae_id
+            referencedTableName: app_user
+            referencedColumnNames: id
+            constraintName: fk_opportunity_assignment_history_previous_ae
+        - addForeignKeyConstraint:
+            baseTableName: opportunity_assignment_history
+            baseColumnNames: assigned_ae_id
+            referencedTableName: app_user
+            referencedColumnNames: id
+            constraintName: fk_opportunity_assignment_history_ae
+        - addForeignKeyConstraint:
+            baseTableName: opportunity_assignment_history
+            baseColumnNames: assigned_by
+            referencedTableName: app_user
+            referencedColumnNames: id
+            constraintName: fk_opportunity_assignment_history_manager
+        - createIndex:
+            tableName: opportunity_assignment_history
+            indexName: ix_opportunity_assignment_history
+            columns:
+              - column: { name: opportunity_id }
+              - column: { name: created_at }
+        - createTable:
+            tableName: opportunity_meeting
+            columns:
+              - column: { name: id, type: uuid, constraints: { primaryKey: true, nullable: false } }
+              - column: { name: opportunity_id, type: uuid, constraints: { nullable: false } }
+              - column: { name: ae_user_id, type: uuid, constraints: { nullable: false } }
+              - column: { name: title, type: varchar(180), constraints: { nullable: false } }
+              - column: { name: notes, type: varchar(10000) }
+              - column: { name: completed_at, type: timestamp with time zone, constraints: { nullable: false } }
+              - column: { name: created_at, type: timestamp with time zone, defaultValueComputed: CURRENT_TIMESTAMP, constraints: { nullable: false } }
+        - addForeignKeyConstraint:
+            baseTableName: opportunity_meeting
+            baseColumnNames: opportunity_id
+            referencedTableName: sales_opportunity
+            referencedColumnNames: id
+            constraintName: fk_opportunity_meeting_opportunity
+        - addForeignKeyConstraint:
+            baseTableName: opportunity_meeting
+            baseColumnNames: ae_user_id
+            referencedTableName: app_user
+            referencedColumnNames: id
+            constraintName: fk_opportunity_meeting_ae
+        - createIndex:
+            tableName: opportunity_meeting
+            indexName: ix_opportunity_meeting_ae_completed
+            columns:
+              - column: { name: ae_user_id }
+              - column: { name: completed_at }
+        - createTable:
+            tableName: app_notification
+            columns:
+              - column: { name: id, type: uuid, constraints: { primaryKey: true, nullable: false } }
+              - column: { name: recipient_id, type: uuid, constraints: { nullable: false } }
+              - column: { name: title, type: varchar(180), constraints: { nullable: false } }
+              - column: { name: message, type: varchar(1000), constraints: { nullable: false } }
+              - column: { name: target_path, type: varchar(500), constraints: { nullable: false } }
+              - column: { name: created_at, type: timestamp with time zone, defaultValueComputed: CURRENT_TIMESTAMP, constraints: { nullable: false } }
+              - column: { name: read_at, type: timestamp with time zone }
+        - addForeignKeyConstraint:
+            baseTableName: app_notification
+            baseColumnNames: recipient_id
+            referencedTableName: app_user
+            referencedColumnNames: id
+            constraintName: fk_app_notification_recipient
+        - createIndex:
+            tableName: app_notification
+            indexName: ix_app_notification_recipient_created
+            columns:
+              - column: { name: recipient_id }
+              - column: { name: created_at }
+  - changeSet:
+      id: 006-ae-opportunity-lifecycle
+      author: prosperr
+      changes:
+        - addColumn:
+            tableName: sales_opportunity
+            columns:
+              - column: { name: final_deal_value, type: "numeric(14,2)" }
+              - column: { name: closed_at, type: timestamp with time zone }
+              - column: { name: commercial_details, type: varchar(10000) }
+              - column: { name: lost_reason, type: varchar(500) }
+              - column: { name: closure_notes, type: varchar(10000) }
+        - update:
+            tableName: sales_opportunity
+            columns:
+              - column: { name: status, value: L1 }
+            where: status = 'ACTIVE'
+        - update:
+            tableName: sales_opportunity
+            columns:
+              - column: { name: final_deal_value, valueComputed: amount }
+              - column: { name: closed_at, valueComputed: updated_at }
+              - column: { name: commercial_details, value: "Legacy closure; commercial details were not captured." }
+            where: status = 'WON'
+        - update:
+            tableName: sales_opportunity
+            columns:
+              - column: { name: closed_at, valueComputed: updated_at }
+              - column: { name: lost_reason, value: "Legacy closure; loss reason was not captured." }
+            where: status = 'LOST'
+        - createTable:
+            tableName: opportunity_stage_history
+            columns:
+              - column: { name: id, type: uuid, constraints: { primaryKey: true, nullable: false } }
+              - column: { name: opportunity_id, type: uuid, constraints: { nullable: false } }
+              - column: { name: actor_id, type: uuid, constraints: { nullable: false } }
+              - column: { name: from_stage, type: varchar(20) }
+              - column: { name: to_stage, type: varchar(20), constraints: { nullable: false } }
+              - column: { name: reason, type: varchar(2000) }
+              - column: { name: created_at, type: timestamp with time zone, defaultValueComputed: CURRENT_TIMESTAMP, constraints: { nullable: false } }
+        - addForeignKeyConstraint:
+            baseTableName: opportunity_stage_history
+            baseColumnNames: opportunity_id
+            referencedTableName: sales_opportunity
+            referencedColumnNames: id
+            constraintName: fk_opportunity_stage_history_opportunity
+        - addForeignKeyConstraint:
+            baseTableName: opportunity_stage_history
+            baseColumnNames: actor_id
+            referencedTableName: app_user
+            referencedColumnNames: id
+            constraintName: fk_opportunity_stage_history_actor
+        - sql:
+            dbms: postgresql
+            sql: INSERT INTO opportunity_stage_history(id, opportunity_id, actor_id, from_stage, to_stage, reason, created_at) SELECT gen_random_uuid(), h.opportunity_id, h.assigned_by, NULL, 'L1', 'Initial stage from assignment history', h.created_at FROM opportunity_assignment_history h WHERE h.action = 'ASSIGNED';
+        - sql:
+            dbms: h2
+            sql: INSERT INTO opportunity_stage_history(id, opportunity_id, actor_id, from_stage, to_stage, reason, created_at) SELECT RANDOM_UUID(), h.opportunity_id, h.assigned_by, NULL, 'L1', 'Initial stage from assignment history', h.created_at FROM opportunity_assignment_history h WHERE h.action = 'ASSIGNED';
+        - createIndex:
+            tableName: opportunity_stage_history
+            indexName: ix_opportunity_stage_history_opportunity_date
+            columns:
+              - column: { name: opportunity_id }
+              - column: { name: created_at }
+        - createTable:
+            tableName: opportunity_stakeholder
+            columns:
+              - column: { name: id, type: uuid, constraints: { primaryKey: true, nullable: false } }
+              - column: { name: opportunity_id, type: uuid, constraints: { nullable: false } }
+              - column: { name: contact_id, type: uuid, constraints: { nullable: false } }
+              - column: { name: added_by, type: uuid, constraints: { nullable: false } }
+              - column: { name: role, type: varchar(32), constraints: { nullable: false } }
+              - column: { name: created_at, type: timestamp with time zone, defaultValueComputed: CURRENT_TIMESTAMP, constraints: { nullable: false } }
+        - addUniqueConstraint:
+            tableName: opportunity_stakeholder
+            columnNames: opportunity_id, contact_id
+            constraintName: uq_opportunity_stakeholder_contact
+        - addForeignKeyConstraint:
+            baseTableName: opportunity_stakeholder
+            baseColumnNames: opportunity_id
+            referencedTableName: sales_opportunity
+            referencedColumnNames: id
+            constraintName: fk_opportunity_stakeholder_opportunity
+        - addForeignKeyConstraint:
+            baseTableName: opportunity_stakeholder
+            baseColumnNames: contact_id
+            referencedTableName: contact
+            referencedColumnNames: id
+            constraintName: fk_opportunity_stakeholder_contact
+        - addForeignKeyConstraint:
+            baseTableName: opportunity_stakeholder
+            baseColumnNames: added_by
+            referencedTableName: app_user
+            referencedColumnNames: id
+            constraintName: fk_opportunity_stakeholder_added_by
+        - addColumn:
+            tableName: opportunity_meeting
+            columns:
+              - column: { name: meeting_type, type: varchar(32), defaultValue: OTHER, constraints: { nullable: false } }
+              - column: { name: meeting_level, type: varchar(8) }
+              - column: { name: meeting_outcome, type: varchar(5000), defaultValue: Completed, constraints: { nullable: false } }
+              - column: { name: next_action, type: varchar(5000) }
+              - column: { name: follow_up_at, type: timestamp with time zone }
+              - column: { name: follow_up_completed_at, type: timestamp with time zone }
+        - createTable:
+            tableName: opportunity_meeting_participant
+            columns:
+              - column: { name: meeting_id, type: uuid, constraints: { nullable: false } }
+              - column: { name: contact_id, type: uuid, constraints: { nullable: false } }
+        - addPrimaryKey:
+            tableName: opportunity_meeting_participant
+            columnNames: meeting_id, contact_id
+            constraintName: pk_opportunity_meeting_participant
+        - addForeignKeyConstraint:
+            baseTableName: opportunity_meeting_participant
+            baseColumnNames: meeting_id
+            referencedTableName: opportunity_meeting
+            referencedColumnNames: id
+            constraintName: fk_opportunity_meeting_participant_meeting
+        - addForeignKeyConstraint:
+            baseTableName: opportunity_meeting_participant
+            baseColumnNames: contact_id
+            referencedTableName: contact
+            referencedColumnNames: id
+            constraintName: fk_opportunity_meeting_participant_contact
+        - createIndex:
+            tableName: opportunity_meeting
+            indexName: ix_opportunity_meeting_ae_level
+            columns:
+              - column: { name: ae_user_id }
+              - column: { name: meeting_level }
+        - createIndex:
+            tableName: opportunity_meeting
+            indexName: ix_opportunity_meeting_follow_up
+            columns:
+              - column: { name: ae_user_id }
+              - column: { name: follow_up_at }
+              - column: { name: follow_up_completed_at }
+        - createTable:
+            tableName: opportunity_closure
+            columns:
+              - column: { name: id, type: uuid, constraints: { primaryKey: true, nullable: false } }
+              - column: { name: opportunity_id, type: uuid, constraints: { nullable: false } }
+              - column: { name: closed_by, type: uuid, constraints: { nullable: false } }
+              - column: { name: outcome, type: varchar(8), constraints: { nullable: false } }
+              - column: { name: final_deal_value, type: "numeric(14,2)" }
+              - column: { name: currency_code, type: varchar(3), defaultValue: INR, constraints: { nullable: false } }
+              - column: { name: closed_at, type: timestamp with time zone, constraints: { nullable: false } }
+              - column: { name: commercial_details, type: varchar(10000) }
+              - column: { name: lost_reason, type: varchar(500) }
+              - column: { name: closure_notes, type: varchar(10000) }
+              - column: { name: created_at, type: timestamp with time zone, defaultValueComputed: CURRENT_TIMESTAMP, constraints: { nullable: false } }
+        - addForeignKeyConstraint:
+            baseTableName: opportunity_closure
+            baseColumnNames: opportunity_id
+            referencedTableName: sales_opportunity
+            referencedColumnNames: id
+            constraintName: fk_opportunity_closure_opportunity
+        - addForeignKeyConstraint:
+            baseTableName: opportunity_closure
+            baseColumnNames: closed_by
+            referencedTableName: app_user
+            referencedColumnNames: id
+            constraintName: fk_opportunity_closure_actor
+        - createIndex:
+            tableName: opportunity_closure
+            indexName: ix_opportunity_closure_outcome_date
+            columns:
+              - column: { name: outcome }
+              - column: { name: closed_at }
+        - sql:
+            dbms: postgresql
+            sql: INSERT INTO opportunity_closure(id, opportunity_id, closed_by, outcome, final_deal_value, currency_code, closed_at, commercial_details, lost_reason, closure_notes, created_at) SELECT gen_random_uuid(), o.id, o.assigned_ae_id, o.status, o.final_deal_value, o.currency_code, o.closed_at, o.commercial_details, o.lost_reason, o.closure_notes, o.updated_at FROM sales_opportunity o WHERE o.status IN ('WON','LOST');
+        - sql:
+            dbms: h2
+            sql: INSERT INTO opportunity_closure(id, opportunity_id, closed_by, outcome, final_deal_value, currency_code, closed_at, commercial_details, lost_reason, closure_notes, created_at) SELECT RANDOM_UUID(), o.id, o.assigned_ae_id, o.status, o.final_deal_value, o.currency_code, o.closed_at, o.commercial_details, o.lost_reason, o.closure_notes, o.updated_at FROM sales_opportunity o WHERE o.status IN ('WON','LOST');
+        - createTable:
+            tableName: implementation_handover
+            columns:
+              - column: { name: id, type: uuid, constraints: { primaryKey: true, nullable: false } }
+              - column: { name: opportunity_id, type: uuid, constraints: { nullable: false } }
+              - column: { name: generated_by, type: uuid, constraints: { nullable: false } }
+              - column: { name: status, type: varchar(24), defaultValue: PENDING, constraints: { nullable: false } }
+              - column: { name: final_deal_value, type: "numeric(14,2)", constraints: { nullable: false } }
+              - column: { name: currency_code, type: varchar(3), defaultValue: INR, constraints: { nullable: false } }
+              - column: { name: commercial_details, type: varchar(10000), constraints: { nullable: false } }
+              - column: { name: created_at, type: timestamp with time zone, defaultValueComputed: CURRENT_TIMESTAMP, constraints: { nullable: false } }
+        - addForeignKeyConstraint:
+            baseTableName: implementation_handover
+            baseColumnNames: opportunity_id
+            referencedTableName: sales_opportunity
+            referencedColumnNames: id
+            constraintName: fk_implementation_handover_opportunity
+        - addForeignKeyConstraint:
+            baseTableName: implementation_handover
+            baseColumnNames: generated_by
+            referencedTableName: app_user
+            referencedColumnNames: id
+            constraintName: fk_implementation_handover_actor
+        - sql:
+            dbms: postgresql
+            sql: INSERT INTO implementation_handover(id, opportunity_id, generated_by, status, final_deal_value, currency_code, commercial_details, created_at) SELECT gen_random_uuid(), o.id, o.assigned_ae_id, 'PENDING', o.final_deal_value, o.currency_code, o.commercial_details, o.closed_at FROM sales_opportunity o WHERE o.status = 'WON';
+        - sql:
+            dbms: h2
+            sql: INSERT INTO implementation_handover(id, opportunity_id, generated_by, status, final_deal_value, currency_code, commercial_details, created_at) SELECT RANDOM_UUID(), o.id, o.assigned_ae_id, 'PENDING', o.final_deal_value, o.currency_code, o.commercial_details, o.closed_at FROM sales_opportunity o WHERE o.status = 'WON';
+        - createTable:
+            tableName: opportunity_reopen_request
+            columns:
+              - column: { name: id, type: uuid, constraints: { primaryKey: true, nullable: false } }
+              - column: { name: opportunity_id, type: uuid, constraints: { nullable: false } }
+              - column: { name: requested_by, type: uuid, constraints: { nullable: false } }
+              - column: { name: reviewed_by, type: uuid }
+              - column: { name: reason, type: varchar(2000), constraints: { nullable: false } }
+              - column: { name: status, type: varchar(16), defaultValue: PENDING, constraints: { nullable: false } }
+              - column: { name: review_reason, type: varchar(2000) }
+              - column: { name: created_at, type: timestamp with time zone, defaultValueComputed: CURRENT_TIMESTAMP, constraints: { nullable: false } }
+              - column: { name: reviewed_at, type: timestamp with time zone }
+        - addForeignKeyConstraint:
+            baseTableName: opportunity_reopen_request
+            baseColumnNames: opportunity_id
+            referencedTableName: sales_opportunity
+            referencedColumnNames: id
+            constraintName: fk_opportunity_reopen_request_opportunity
+        - addForeignKeyConstraint:
+            baseTableName: opportunity_reopen_request
+            baseColumnNames: requested_by
+            referencedTableName: app_user
+            referencedColumnNames: id
+            constraintName: fk_opportunity_reopen_request_requester
+        - addForeignKeyConstraint:
+            baseTableName: opportunity_reopen_request
+            baseColumnNames: reviewed_by
+            referencedTableName: app_user
+            referencedColumnNames: id
+            constraintName: fk_opportunity_reopen_request_reviewer
+        - createIndex:
+            tableName: opportunity_reopen_request
+            indexName: ix_opportunity_reopen_request_status_date
+            columns:
+              - column: { name: status }
+              - column: { name: created_at }

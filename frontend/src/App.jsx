@@ -15,10 +15,19 @@ import { BdrDashboardPage, LeadListPage, LeadDetailPage, CallsPage, FollowUpsPag
 import { SalesManagerSqlQueuePage } from "@/pages/bdr/SalesManagerSqlQueuePage";
 import { SqlQualificationFormPage } from "@/pages/bdr/SqlQualificationFormPage";
 import { SalesManagerSqlReviewPage } from "@/pages/bdr/SalesManagerSqlQueuePage";
+import { SalesManagerDashboardPage } from "@/pages/sales-manager/SalesManagerDashboardPage";
+import { SalesManagerAssignmentsPage } from "@/pages/sales-manager/SalesManagerAssignmentsPage";
+import { TeamPerformancePage } from "@/pages/sales-manager/TeamPerformancePage";
+import { AeOpportunitiesPage } from "@/pages/ae/AeOpportunitiesPage";
+import { AeDashboardPage } from "@/pages/ae/AeDashboardPage";
+import { AeOpportunityDetailPage } from "@/pages/ae/AeOpportunityDetailPage";
+import { LeadershipDashboardPage } from "@/pages/leadership/LeadershipDashboardPage";
 
 function Guard({children}) { const {user,loading}=useAuth(); const location=useLocation(); if(loading)return null; if(!user)return <Navigate to="/login" replace state={{from:location.pathname}}/>; if(user.mustChangePassword&&location.pathname!=="/change-password")return <Navigate to="/change-password" replace/>; const wanted=Object.entries(roleNavigation).find(([,v])=>location.pathname===`/${v.dashboard}`)?.[0]; if(wanted&&wanted!==user.role)return <Navigate to={`/${roleNavigation[user.role]?.dashboard||"admin"}`} replace/>; if(location.pathname.startsWith("/admin")&&user.role!=="ADMIN")return <Navigate to={`/${roleNavigation[user.role]?.dashboard||"admin"}`} replace/>; return children; }
 function BdrOnly({children}) { const {user}=useAuth(); return user?.role==="BDR"?children:<Navigate to={`/${roleNavigation[user?.role]?.dashboard||"admin"}`} replace/>; }
 function SalesManagerOnly({children}) { const {user}=useAuth(); return user?.role==="SALES_MANAGER"?children:<Navigate to={`/${roleNavigation[user?.role]?.dashboard||"admin"}`} replace/>; }
+function AeOnly({children}) { const {user}=useAuth(); return user?.role==="AE"?children:<Navigate to={`/${roleNavigation[user?.role]?.dashboard||"admin"}`} replace/>; }
+function LeadershipOnly({children}) { const {user}=useAuth(); return user?.role==="LEADERSHIP"?children:<Navigate to={`/${roleNavigation[user?.role]?.dashboard||"admin"}`} replace/>; }
 
 export function AppRoutes() {
   return (
@@ -28,7 +37,8 @@ export function AppRoutes() {
       <Route path="/" element={<Navigate to="/admin" replace />} />
       <Route element={<Guard><AppShell /></Guard>}>
         {roleOrder.map((role) => (
-          <Route key={role} path={`/${roleNavigation[role].dashboard}`} element={role === "ADMIN" ? <AdminDashboardPage/> : role === "BDR" ? <BdrDashboardPage/> : <DashboardPage role={role} />} />
+          role === "LEADERSHIP" ? <Route key={role} path="/leadership/*" element={<LeadershipOnly><LeadershipDashboardPage/></LeadershipOnly>} /> :
+          <Route key={role} path={`/${roleNavigation[role].dashboard}`} element={role === "ADMIN" ? <AdminDashboardPage/> : role === "BDR" ? <BdrDashboardPage/> : role === "SALES_MANAGER" ? <SalesManagerDashboardPage/> : <AeDashboardPage/>} />
         ))}
         <Route path="/admin/users" element={<UserManagementPage/>}/>
         <Route path="/organisations" element={<OrganisationListPage/>}/>
@@ -43,6 +53,13 @@ export function AppRoutes() {
         <Route path="/bdr/leads/:id/qualification" element={<BdrOnly><SqlQualificationFormPage/></BdrOnly>}/>
         <Route path="/sales-manager/sql-qualifications" element={<SalesManagerOnly><SalesManagerSqlQueuePage/></SalesManagerOnly>}/>
         <Route path="/sales-manager/sql-qualifications/:id" element={<SalesManagerOnly><SalesManagerSqlReviewPage/></SalesManagerOnly>}/>
+        <Route path="/sales-manager/assignments" element={<SalesManagerOnly><SalesManagerAssignmentsPage/></SalesManagerOnly>}/>
+        <Route path="/sales-manager/team-performance" element={<SalesManagerOnly><TeamPerformancePage/></SalesManagerOnly>}/>
+        <Route path="/ae/opportunities" element={<AeOnly><AeOpportunitiesPage/></AeOnly>}/>
+        <Route path="/ae/meetings" element={<AeOnly><AeOpportunitiesPage/></AeOnly>}/>
+        <Route path="/ae/stakeholders" element={<AeOnly><AeOpportunitiesPage/></AeOnly>}/>
+        <Route path="/ae/handovers" element={<AeOnly><AeOpportunitiesPage/></AeOnly>}/>
+        <Route path="/ae/opportunities/:id" element={<AeOnly><AeOpportunityDetailPage/></AeOnly>}/>
       </Route>
       <Route path="*" element={<Navigate to="/admin" replace />} />
     </Routes>
