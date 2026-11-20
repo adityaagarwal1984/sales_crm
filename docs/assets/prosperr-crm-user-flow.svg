@@ -1,0 +1,160 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1260" viewBox="0 0 1800 1260" role="img" aria-labelledby="title desc">
+  <title id="title">Prosperr Sales CRM end-to-end user flow</title>
+  <desc id="desc">Admin provisions role-based accounts. BDRs discover organisations, add contacts, create leads, call prospects, and submit SQL qualifications. Sales Managers review and approve or reject SQLs, then assign approved SQLs to active AEs. AEs manage meetings and stakeholders through L1, L2, and L3, then close Won or Lost. Won creates an implementation handover. Leadership reads organization-wide analytics. Organisations and contacts are shared directory records; leads, SQLs, and opportunities have distinct owners and histories.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#496775"/></marker>
+    <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#16886f"/></marker>
+    <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L10,5 L0,10 z" fill="#3977b8"/></marker>
+    <style>
+      .bg{fill:#f4f7f7}.title{font:700 34px Arial,sans-serif;fill:#153c36}.sub{font:400 16px Arial,sans-serif;fill:#58706f}.adminTitle{font:700 16px Arial,sans-serif;fill:#fff}.laneTitle{font:700 18px Arial,sans-serif;fill:#183f39}.laneSub{font:400 12px Arial,sans-serif;fill:#5f7776}.cardTitle{font:700 15px Arial,sans-serif;fill:#1d3938}.cardText{font:400 12.5px Arial,sans-serif;fill:#58706f}.small{font:600 11px Arial,sans-serif;fill:#526a69}.tag{font:700 10px Arial,sans-serif;letter-spacing:.6px}.white{fill:#fff}.line{stroke:#829896;stroke-width:2;fill:none;marker-end:url(#arrow)}.handoff{stroke:#16886f;stroke-width:3;fill:none;marker-end:url(#arrowGreen)}.analyticsLine{stroke:#3977b8;stroke-width:2.2;stroke-dasharray:7 6;fill:none;marker-end:url(#arrowBlue)}
+    </style>
+  </defs>
+  <rect class="bg" width="1800" height="1260"/>
+  <text x="52" y="58" class="title">Prosperr Sales CRM</text>
+  <text x="52" y="88" class="sub">End-to-end user flow · how work moves from discovery to revenue and leadership insight</text>
+  <g transform="translate(52 110)">
+    <rect width="1696" height="92" rx="16" fill="#173f39"/>
+    <circle cx="35" cy="46" r="18" fill="#80d8bb"/><text x="35" y="51" text-anchor="middle" class="adminTitle" fill="#173f39">A</text>
+    <text x="68" y="39" class="adminTitle">ADMIN · USER &amp; ACCESS SETUP</text>
+    <text x="68" y="62" class="cardText" fill="#dcebe7">Creates accounts · assigns one role (BDR, SALES_MANAGER, AE, LEADERSHIP, ADMIN) · activates/deactivates users · resets temporary passwords</text>
+    <rect x="1314" y="25" width="344" height="42" rx="21" fill="#28574f"/>
+    <text x="1486" y="51" text-anchor="middle" class="tag" fill="#e6f5ef">SERVER ENFORCES ROLE + RECORD ACCESS</text>
+  </g>
+
+  <!-- Role lanes -->
+  <g>
+    <rect x="52" y="226" width="405" height="762" rx="18" fill="#fff" stroke="#d9e4e2"/>
+    <rect x="52" y="226" width="405" height="67" rx="18" fill="#e0f4ed"/>
+    <path d="M52 275h405v18H52z" fill="#e0f4ed"/>
+    <circle cx="82" cy="259" r="17" fill="#16886f"/><text x="82" y="264" text-anchor="middle" class="adminTitle">B</text>
+    <text x="110" y="257" class="laneTitle">BDR</text><text x="110" y="276" class="laneSub">DISCOVER · QUALIFY · SUBMIT</text>
+
+    <rect x="487" y="226" width="405" height="762" rx="18" fill="#fff" stroke="#d9e4e2"/>
+    <rect x="487" y="226" width="405" height="67" rx="18" fill="#e8f0fa"/>
+    <path d="M487 275h405v18H487z" fill="#e8f0fa"/>
+    <circle cx="517" cy="259" r="17" fill="#3977b8"/><text x="517" y="264" text-anchor="middle" class="adminTitle">M</text>
+    <text x="545" y="257" class="laneTitle">SALES MANAGER</text><text x="545" y="276" class="laneSub">REVIEW · DECIDE · ASSIGN</text>
+
+    <rect x="922" y="226" width="405" height="762" rx="18" fill="#fff" stroke="#d9e4e2"/>
+    <rect x="922" y="226" width="405" height="67" rx="18" fill="#f0ecfa"/>
+    <path d="M922 275h405v18H922z" fill="#f0ecfa"/>
+    <circle cx="952" cy="259" r="17" fill="#7862b2"/><text x="952" y="264" text-anchor="middle" class="adminTitle">E</text>
+    <text x="980" y="257" class="laneTitle">ACCOUNT EXECUTIVE</text><text x="980" y="276" class="laneSub">ENGAGE · PROGRESS · CLOSE</text>
+
+    <rect x="1357" y="226" width="391" height="762" rx="18" fill="#fff" stroke="#d9e4e2"/>
+    <rect x="1357" y="226" width="391" height="67" rx="18" fill="#e8f3f7"/>
+    <path d="M1357 275h391v18h-391z" fill="#e8f3f7"/>
+    <circle cx="1387" cy="259" r="17" fill="#3977b8"/><text x="1387" y="264" text-anchor="middle" class="adminTitle">L</text>
+    <text x="1415" y="257" class="laneTitle">LEADERSHIP</text><text x="1415" y="276" class="laneSub">MONITOR · ANALYSE · DECIDE</text>
+  </g>
+
+  <!-- BDR flow -->
+  <g>
+    <rect x="77" y="316" width="355" height="86" rx="12" fill="#f7fbf9" stroke="#bbded1"/>
+    <text x="96" y="342" class="cardTitle">1 · Discover organisation</text><text x="96" y="363" class="cardText">Create/view company profile and add its contacts.</text><text x="96" y="382" class="cardText">Directory records are shared across CRM roles.</text>
+    <path d="M254 402v18" class="line"/>
+    <rect x="77" y="425" width="355" height="78" rx="12" fill="#f7fbf9" stroke="#bbded1"/>
+    <text x="96" y="451" class="cardTitle">2 · Create a lead</text><text x="96" y="472" class="cardText">A lead is a sales pursuit linked to an organisation</text><text x="96" y="489" class="cardText">and primary contact; the BDR owns it.</text>
+    <path d="M254 503v18" class="line"/>
+    <rect x="77" y="526" width="355" height="82" rx="12" fill="#f7fbf9" stroke="#bbded1"/>
+    <text x="96" y="552" class="cardTitle">3 · Call and follow up</text><text x="96" y="573" class="cardText">Every call is a new activity. Schedule, track,</text><text x="96" y="592" class="cardText">complete, or reschedule follow-ups.</text>
+    <path d="M254 608v18" class="line"/>
+    <rect x="77" y="631" width="355" height="82" rx="12" fill="#f7fbf9" stroke="#bbded1"/>
+    <text x="96" y="657" class="cardTitle">4 · Identify an interested prospect</text><text x="96" y="678" class="cardText">Capture business need and qualification details</text><text x="96" y="697" class="cardText">against the existing lead.</text>
+    <path d="M254 713v18" class="line"/>
+    <rect x="77" y="736" width="355" height="88" rx="12" fill="#eaf7f2" stroke="#81cdb2" stroke-width="1.5"/>
+    <text x="96" y="762" class="cardTitle">5 · Save draft → submit SQL</text><text x="96" y="783" class="cardText">SQL is a qualification/review record, not a contact</text><text x="96" y="802" class="cardText">or a separate lead. Submission enters manager queue.</text>
+    <path d="M254 824v22" class="handoff"/>
+    <rect x="100" y="851" width="309" height="42" rx="21" fill="#16886f"/><text x="254" y="877" text-anchor="middle" class="tag white">HANDOFF · SUBMITTED SQL</text>
+    <rect x="77" y="914" width="355" height="48" rx="10" fill="#fff8e9" stroke="#efcf8c"/>
+    <text x="254" y="935" text-anchor="middle" class="small">If rejected: see reason, revise, and resubmit</text><text x="254" y="951" text-anchor="middle" class="small">where permitted · call history remains intact</text>
+  </g>
+
+  <!-- Manager flow -->
+  <g>
+    <rect x="512" y="316" width="355" height="78" rx="12" fill="#f7faff" stroke="#c6d9ed"/>
+    <text x="531" y="342" class="cardTitle">1 · Review queue</text><text x="531" y="363" class="cardText">Sales Managers can see submitted SQLs across</text><text x="531" y="382" class="cardText">all BDRs, independent of optional team links.</text>
+    <path d="M689 394v20" class="line"/>
+    <rect x="512" y="421" width="355" height="78" rx="12" fill="#f7faff" stroke="#c6d9ed"/>
+    <text x="531" y="447" class="cardTitle">2 · Review qualification</text><text x="531" y="468" class="cardText">Check organisation, contact, need, decision maker,</text><text x="531" y="487" class="cardText">deal value, timeline, and supporting details.</text>
+    <path d="M689 499v20" class="line"/>
+    <rect x="512" y="526" width="355" height="87" rx="12" fill="#f7faff" stroke="#c6d9ed"/>
+    <text x="531" y="552" class="cardTitle">3 · Approve or reject</text><text x="531" y="573" class="cardText">Approval records reviewer and time. Rejection</text><text x="531" y="592" class="cardText">requires a reason and returns feedback to the BDR.</text>
+    <path d="M689 613v20" class="line"/>
+    <rect x="512" y="640" width="355" height="90" rx="12" fill="#eef4fc" stroke="#92b7df" stroke-width="1.5"/>
+    <text x="531" y="666" class="cardTitle">4 · Assign approved SQL</text><text x="531" y="687" class="cardText">Choose an active AE. Only approved SQLs can</text><text x="531" y="706" class="cardText">be assigned; duplicate active opportunity blocked.</text>
+    <path d="M689 730v20" class="handoff"/>
+    <rect x="535" y="755" width="309" height="42" rx="21" fill="#3977b8"/><text x="689" y="781" text-anchor="middle" class="tag white">HANDOFF · ASSIGNED OPPORTUNITY</text>
+    <rect x="512" y="817" width="355" height="85" rx="12" fill="#f7faff" stroke="#c6d9ed"/>
+    <text x="531" y="843" class="cardTitle">5 · Notify and retain history</text><text x="531" y="864" class="cardText">AE gets an in-app notification. Assign/reassign</text><text x="531" y="883" class="cardText">events remain in assignment history.</text>
+    <rect x="512" y="914" width="355" height="48" rx="10" fill="#f4f7fb" stroke="#d4deea"/>
+    <text x="689" y="935" text-anchor="middle" class="small">Manager can also decide AE reopen requests</text><text x="689" y="951" text-anchor="middle" class="small">and monitor organization-wide team performance</text>
+  </g>
+
+  <!-- AE flow -->
+  <g>
+    <rect x="947" y="316" width="355" height="78" rx="12" fill="#faf9fd" stroke="#d8d0ec"/>
+    <text x="966" y="342" class="cardTitle">1 · Open assigned opportunity</text><text x="966" y="363" class="cardText">See organisation, its contacts, BDR qualification,</text><text x="966" y="382" class="cardText">and assignment history.</text>
+    <path d="M1124 394v20" class="line"/>
+    <rect x="947" y="421" width="355" height="78" rx="12" fill="#faf9fd" stroke="#d8d0ec"/>
+    <text x="966" y="447" class="cardTitle">2 · Manage stakeholders &amp; meetings</text><text x="966" y="468" class="cardText">Link multiple organisation contacts; record meeting</text><text x="966" y="487" class="cardText">participants, notes, outcome, and next action.</text>
+    <path d="M1124 499v20" class="line"/>
+    <rect x="947" y="526" width="355" height="121" rx="12" fill="#f5f2fb" stroke="#c2b5e0"/>
+    <text x="966" y="552" class="cardTitle">3 · Progress the opportunity</text>
+    <rect x="967" y="570" width="78" height="32" rx="16" fill="#fff" stroke="#bcaedc"/><text x="1006" y="591" text-anchor="middle" class="small">L1</text>
+    <path d="M1047 586h37" class="line"/>
+    <rect x="1090" y="570" width="78" height="32" rx="16" fill="#fff" stroke="#bcaedc"/><text x="1129" y="591" text-anchor="middle" class="small">L2</text>
+    <path d="M1170 586h37" class="line"/>
+    <rect x="1213" y="570" width="68" height="32" rx="16" fill="#fff" stroke="#bcaedc"/><text x="1247" y="591" text-anchor="middle" class="small">L3</text>
+    <text x="966" y="627" class="cardText">Completed matching L1/L2 meeting advances stage;</text><text x="966" y="643" class="cardText">skipping ahead requires a reason.</text>
+    <path d="M1124 647v20" class="line"/>
+    <rect x="947" y="674" width="355" height="116" rx="12" fill="#f7f9fb" stroke="#cbd8de"/>
+    <text x="966" y="700" class="cardTitle">4 · Close the opportunity</text>
+    <rect x="966" y="713" width="154" height="57" rx="10" fill="#eaf7f2" stroke="#a7d9c6"/><text x="980" y="735" class="tag" fill="#16886f">WON</text><text x="980" y="753" class="cardText">Value + close date</text><text x="980" y="768" class="cardText">→ implementation handover</text>
+    <rect x="1130" y="713" width="153" height="57" rx="10" fill="#fff3f1" stroke="#eac4be"/><text x="1144" y="735" class="tag" fill="#b85243">LOST</text><text x="1144" y="753" class="cardText">Required lost reason</text><text x="1144" y="768" class="cardText">+ closure notes/history</text>
+    <rect x="947" y="817" width="355" height="85" rx="12" fill="#faf9fd" stroke="#d8d0ec"/>
+    <text x="966" y="843" class="cardTitle">5 · Preserve lifecycle history</text><text x="966" y="864" class="cardText">Stage and closure changes are auditable. Closed deals</text><text x="966" y="883" class="cardText">can reopen only after Sales Manager approval.</text>
+    <rect x="947" y="914" width="355" height="48" rx="10" fill="#f4f1fa" stroke="#d8d0ec"/>
+    <text x="1124" y="944" text-anchor="middle" class="small">AE access is limited to current assignments</text>
+  </g>
+
+  <!-- Leadership read model -->
+  <g>
+    <rect x="1382" y="316" width="341" height="176" rx="14" fill="#f5fafc" stroke="#bfd9e4"/>
+    <text x="1402" y="345" class="cardTitle">Organization-wide, read-only view</text><text x="1402" y="369" class="cardText">Live database aggregates with filters for</text><text x="1402" y="389" class="cardText">date, period, department, employee, and stage.</text>
+    <rect x="1402" y="408" width="144" height="30" rx="8" fill="#fff" stroke="#d6e6eb"/><text x="1474" y="428" text-anchor="middle" class="small">Overview &amp; funnel</text>
+    <rect x="1555" y="408" width="147" height="30" rx="8" fill="#fff" stroke="#d6e6eb"/><text x="1628" y="428" text-anchor="middle" class="small">BDR / Manager / AE</text>
+    <rect x="1402" y="448" width="144" height="30" rx="8" fill="#fff" stroke="#d6e6eb"/><text x="1474" y="468" text-anchor="middle" class="small">Revenue trends</text>
+    <rect x="1555" y="448" width="147" height="30" rx="8" fill="#fff" stroke="#d6e6eb"/><text x="1628" y="468" text-anchor="middle" class="small">Conversion &amp; speed</text>
+    <rect x="1382" y="526" width="341" height="220" rx="14" fill="#eef6f8" stroke="#bfd9e4"/>
+    <text x="1402" y="557" class="cardTitle">Shared business visibility</text>
+    <text x="1402" y="585" class="cardText">Organisation discovery → contacts → calls →</text><text x="1402" y="606" class="cardText">interested prospects → SQL → assignment →</text><text x="1402" y="627" class="cardText">L1 → L2 → L3 → Won / Lost</text>
+    <path d="M1402 645h299" stroke="#c8dce3"/>
+    <text x="1402" y="670" class="cardText">Revenue = final Won value</text><text x="1402" y="692" class="cardText">SQL conversion = approved ÷ submitted</text><text x="1402" y="714" class="cardText">Assignment time = approval → first assignment</text>
+    <rect x="1382" y="782" width="341" height="120" rx="14" fill="#fff8e9" stroke="#efcf8c"/>
+    <text x="1402" y="812" class="cardTitle">Not in current flow</text><text x="1402" y="836" class="cardText">Customer revival / expiry rules and target</text><text x="1402" y="857" class="cardText">management are future scope (Block 7).</text><text x="1402" y="881" class="small">Do not treat these as implemented metrics.</text>
+    <path d="M1382 335C1350 335 1350 960 1320 960" class="analyticsLine"/>
+  </g>
+
+  <!-- Cross-lane handoffs -->
+  <path d="M432 780 C458 780 458 355 510 355" class="handoff"/>
+  <rect x="443" y="530" width="30" height="80" rx="14" fill="#e4f4ee"/><text transform="translate(463 602) rotate(-90)" class="tag" fill="#16886f">SQL FOR REVIEW</text>
+  <path d="M867 777 C900 777 900 355 945 355" class="handoff"/>
+  <rect x="878" y="525" width="30" height="106" rx="14" fill="#eaf0fa"/><text transform="translate(898 622) rotate(-90)" class="tag" fill="#3977b8">APPROVED + ASSIGNED</text>
+  <path d="M1320 847 C1345 847 1345 435 1380 435" class="analyticsLine"/>
+
+  <!-- Shared data and guardrails -->
+  <rect x="52" y="1012" width="1696" height="82" rx="16" fill="#fff" stroke="#d9e4e2"/>
+  <text x="78" y="1043" class="tag" fill="#16886f">SHARED DIRECTORY</text>
+  <text x="78" y="1068" class="cardTitle">Organisations + contacts</text>
+  <text x="388" y="1043" class="cardText">Visible across roles by permission · Admin/BDR maintain the directory · leads, SQL qualifications, and opportunities remain distinct records</text>
+  <text x="388" y="1068" class="cardText">Every handoff retains its own owner and history; backend checks access and PostgreSQL is the source of truth.</text>
+  <rect x="52" y="1113" width="1696" height="78" rx="15" fill="#173f39"/>
+  <text x="78" y="1145" class="adminTitle">END-TO-END SAFEGUARDS</text>
+  <text x="78" y="1169" class="cardText" fill="#dcebe7">Role checks + ownership checks</text>
+  <circle cx="332" cy="1153" r="3" fill="#80d8bb"/><text x="350" y="1169" class="cardText" fill="#dcebe7">Validated APIs</text>
+  <circle cx="493" cy="1153" r="3" fill="#80d8bb"/><text x="511" y="1169" class="cardText" fill="#dcebe7">PostgreSQL constraints + transactions</text>
+  <circle cx="790" cy="1153" r="3" fill="#80d8bb"/><text x="808" y="1169" class="cardText" fill="#dcebe7">Append-only calls and workflow history</text>
+  <circle cx="1125" cy="1153" r="3" fill="#80d8bb"/><text x="1143" y="1169" class="cardText" fill="#dcebe7">Liquibase-managed schema</text>
+  <text x="1718" y="1161" text-anchor="end" class="tag" fill="#80d8bb">PROSPERR CRM</text>
+</svg>

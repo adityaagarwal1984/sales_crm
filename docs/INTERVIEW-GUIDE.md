@@ -31,6 +31,8 @@ Leadership reviews organisation-wide performance, funnel, and revenue
 
 Organisations and contacts are shared directory records. Leads are not contacts. One qualification is associated with one lead; an approved qualification can create at most one opportunity. Assignment, qualification review, stage changes, closures, and reopen decisions retain history.
 
+See the [pictorial user-flow diagram](USER-FLOW.md) for the role handoffs and lifecycle at a glance.
+
 ## 3. System design
 
 ```mermaid

@@ -5,6 +5,7 @@ Use the [Interview Guide](INTERVIEW-GUIDE.md) as the main technical overview.
 ## Focused references
 
 - [API Reference](api-documentation.md) — routes, access roles, pagination, and workflow contracts.
+- [User Flow](USER-FLOW.md) — pictorial end-to-end workflow across roles.
 - [Database Notes](database-design.md) and [ER Diagram](er-diagram.md) — tables, relationships, constraints, and migrations.
 - [Design Principles](DESIGN-PRINCIPLES.md), [Design Patterns](DESIGN-PATTERNS.md), and [Code Quality](CODE-QUALITY-STANDARDS.md) — practical engineering guidance.
 - [Architecture Decisions](ARCHITECTURE-DECISIONS.md) and [ADRs](adr/) — reasons, alternatives, and trade-offs for recorded decisions.

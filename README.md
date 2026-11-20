@@ -14,6 +14,7 @@ A role-based sales CRM that connects organisation discovery, BDR outreach, SQL r
 ## Start here
 
 - [Interview and technical guide](docs/INTERVIEW-GUIDE.md) — architecture, API, schema, PostgreSQL rationale, patterns, algorithms, trade-offs, and interview answers.
+- [End-to-end user flow](docs/USER-FLOW.md) — visual role-by-role handoffs and workflow.
 - [API reference](docs/api-documentation.md) · [Database notes](docs/database-design.md) · [ER diagram](docs/er-diagram.md)
 - [Design principles](docs/DESIGN-PRINCIPLES.md) · [Design patterns](docs/DESIGN-PATTERNS.md) · [ADR index](docs/ARCHITECTURE-DECISIONS.md)
 - [Current status](docs/DEVELOPMENT-STATUS.md) · [Open questions](docs/OPEN-QUESTIONS.md) · [All docs](docs/README.md)
